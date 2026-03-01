@@ -5,7 +5,6 @@ use crate::models::permisos::{PermisoPerfil, CrearPermisoPerfil};
 
 //
 // 📌 GET PERMISOS (Paginado 5 registros)
-// ❗ Sin filtro como pide la evaluación
 //
 #[get("/permisosperfil")]
 pub async fn get_permisos(
@@ -20,8 +19,7 @@ pub async fn get_permisos(
 
     let offset = (page - 1) * 5;
 
-    let permisos = sqlx::query_as!(
-        PermisoPerfil,
+    let permisos = sqlx::query_as::<_, PermisoPerfil>(
         r#"
         SELECT id, idperfil, idmodulo,
                bitagregar, biteditar, bitconsulta,
@@ -29,9 +27,9 @@ pub async fn get_permisos(
         FROM permisosperfil
         ORDER BY id
         LIMIT 5 OFFSET $1
-        "#,
-        offset
+        "#
     )
+    .bind(offset)
     .fetch_all(pool.get_ref())
     .await;
 
@@ -52,17 +50,16 @@ pub async fn get_permiso_by_id(
 
     let id = path.into_inner();
 
-    let permiso = sqlx::query_as!(
-        PermisoPerfil,
+    let permiso = sqlx::query_as::<_, PermisoPerfil>(
         r#"
         SELECT id, idperfil, idmodulo,
                bitagregar, biteditar, bitconsulta,
                biteliminar, bitdetalle
         FROM permisosperfil
         WHERE id = $1
-        "#,
-        id
+        "#
     )
+    .bind(id)
     .fetch_optional(pool.get_ref())
     .await;
 
@@ -82,7 +79,7 @@ pub async fn create_permiso(
     data: web::Json<CrearPermisoPerfil>,
 ) -> HttpResponse {
 
-    let result = sqlx::query!(
+    let result = sqlx::query(
         r#"
         INSERT INTO permisosperfil (
             idperfil, idmodulo,
@@ -90,15 +87,15 @@ pub async fn create_permiso(
             biteliminar, bitdetalle
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        "#,
-        data.idperfil,
-        data.idmodulo,
-        data.bitagregar,
-        data.biteditar,
-        data.bitconsulta,
-        data.biteliminar,
-        data.bitdetalle
+        "#
     )
+    .bind(data.idperfil)
+    .bind(data.idmodulo)
+    .bind(data.bitagregar)
+    .bind(data.biteditar)
+    .bind(data.bitconsulta)
+    .bind(data.biteliminar)
+    .bind(data.bitdetalle)
     .execute(pool.get_ref())
     .await;
 
@@ -120,7 +117,7 @@ pub async fn update_permiso(
 
     let id = path.into_inner();
 
-    let result = sqlx::query!(
+    let result = sqlx::query(
         r#"
         UPDATE permisosperfil
         SET idperfil = $1,
@@ -131,16 +128,16 @@ pub async fn update_permiso(
             biteliminar = $6,
             bitdetalle = $7
         WHERE id = $8
-        "#,
-        data.idperfil,
-        data.idmodulo,
-        data.bitagregar,
-        data.biteditar,
-        data.bitconsulta,
-        data.biteliminar,
-        data.bitdetalle,
-        id
+        "#
     )
+    .bind(data.idperfil)
+    .bind(data.idmodulo)
+    .bind(data.bitagregar)
+    .bind(data.biteditar)
+    .bind(data.bitconsulta)
+    .bind(data.biteliminar)
+    .bind(data.bitdetalle)
+    .bind(id)
     .execute(pool.get_ref())
     .await;
 
@@ -164,10 +161,10 @@ pub async fn delete_permiso(
 
     let id = path.into_inner();
 
-    let result = sqlx::query!(
-        "DELETE FROM permisosperfil WHERE id = $1",
-        id
+    let result = sqlx::query(
+        "DELETE FROM permisosperfil WHERE id = $1"
     )
+    .bind(id)
     .execute(pool.get_ref())
     .await;
 

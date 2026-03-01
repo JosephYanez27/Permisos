@@ -1,5 +1,5 @@
 use actix_web::{get, post, put, delete, web, HttpResponse};
-use sqlx::PgPool;
+use sqlx::{PgPool};
 use std::collections::HashMap;
 use crate::models::modulo::{Modulo, CrearModulo};
 
@@ -19,22 +19,24 @@ pub async fn get_modulos(
 
     let offset = (page - 1) * 5;
 
-    let modulos = sqlx::query_as!(
-        Modulo,
+    let modulos = sqlx::query_as::<_, Modulo>(
         r#"
         SELECT id, strnombremodulo
         FROM modulo
         ORDER BY id
         LIMIT 5 OFFSET $1
-        "#,
-        offset
+        "#
     )
+    .bind(offset)
     .fetch_all(pool.get_ref())
     .await;
 
     match modulos {
         Ok(data) => HttpResponse::Ok().json(data),
-        Err(_) => HttpResponse::InternalServerError().body("Error al obtener módulos"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al obtener módulos")
+        }
     }
 }
 
@@ -49,22 +51,24 @@ pub async fn get_modulo_by_id(
 
     let id = path.into_inner();
 
-    let modulo = sqlx::query_as!(
-        Modulo,
+    let modulo = sqlx::query_as::<_, Modulo>(
         r#"
         SELECT id, strnombremodulo
         FROM modulo
         WHERE id = $1
-        "#,
-        id
+        "#
     )
+    .bind(id)
     .fetch_optional(pool.get_ref())
     .await;
 
     match modulo {
         Ok(Some(data)) => HttpResponse::Ok().json(data),
         Ok(None) => HttpResponse::NotFound().body("Módulo no encontrado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al obtener módulo"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al obtener módulo")
+        }
     }
 }
 
@@ -81,19 +85,22 @@ pub async fn create_modulo(
         return HttpResponse::BadRequest().body("El nombre del módulo es obligatorio");
     }
 
-    let result = sqlx::query!(
+    let result = sqlx::query(
         r#"
         INSERT INTO modulo (strnombremodulo)
         VALUES ($1)
-        "#,
-        data.strnombremodulo
+        "#
     )
+    .bind(&data.strnombremodulo)
     .execute(pool.get_ref())
     .await;
 
     match result {
         Ok(_) => HttpResponse::Ok().body("Módulo creado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al crear módulo"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al crear módulo")
+        }
     }
 }
 
@@ -109,15 +116,15 @@ pub async fn update_modulo(
 
     let id = path.into_inner();
 
-    let result = sqlx::query!(
+    let result = sqlx::query(
         r#"
         UPDATE modulo
         SET strnombremodulo = $1
         WHERE id = $2
-        "#,
-        data.strnombremodulo,
-        id
+        "#
     )
+    .bind(&data.strnombremodulo)
+    .bind(id)
     .execute(pool.get_ref())
     .await;
 
@@ -126,7 +133,10 @@ pub async fn update_modulo(
             HttpResponse::Ok().body("Módulo actualizado")
         }
         Ok(_) => HttpResponse::NotFound().body("Módulo no encontrado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al actualizar módulo"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al actualizar módulo")
+        }
     }
 }
 
@@ -141,10 +151,10 @@ pub async fn delete_modulo(
 
     let id = path.into_inner();
 
-    let result = sqlx::query!(
-        "DELETE FROM modulo WHERE id = $1",
-        id
+    let result = sqlx::query(
+        "DELETE FROM modulo WHERE id = $1"
     )
+    .bind(id)
     .execute(pool.get_ref())
     .await;
 
@@ -153,6 +163,9 @@ pub async fn delete_modulo(
             HttpResponse::Ok().body("Módulo eliminado")
         }
         Ok(_) => HttpResponse::NotFound().body("Módulo no encontrado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al eliminar módulo"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al eliminar módulo")
+        }
     }
 }

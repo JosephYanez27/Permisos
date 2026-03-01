@@ -1,12 +1,12 @@
 use serde::{Serialize, Deserialize};
-
-#[derive(Serialize)]
+use sqlx::FromRow;
+#[derive(Serialize,FromRow)]
 pub struct Modulo {
     pub id: i32,
     pub strnombremodulo: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize,FromRow)]
 pub struct CrearModulo {
     pub strnombremodulo: String,
 }

@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 
-#[derive(Deserialize)]
+#[derive(Deserialize,FromRow)]
 pub struct LoginRequest {
     pub usuario: String,
     pub password: String,
     pub recaptcha_token: String,
 }
-#[derive(Serialize)]
+#[derive(Serialize,FromRow)]
 pub struct Usuario {
     pub id: i32,
     pub strnombreusuario: String,
@@ -16,7 +17,7 @@ pub struct Usuario {
     pub strnumerocelular: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize,FromRow)]
 pub struct CrearUsuario {
     pub strnombreusuario: String,
     pub idperfil: i32,

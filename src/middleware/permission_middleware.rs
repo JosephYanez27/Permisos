@@ -1,12 +1,12 @@
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
-    Error, HttpResponse,HttpMessage
+    Error, HttpMessage,
 };
 use futures::future::{ok, Ready, LocalBoxFuture};
-use std::rc::Rc;
+use sqlx::{PgPool, Row};
+use actix_web::error::ErrorUnauthorized;
 use std::task::{Context, Poll};
-use sqlx::PgPool;
-use crate::utils::jwt::Claims;
+use std::rc::Rc;
 
 pub struct PermissionMiddleware {
     pub pool: PgPool,
@@ -19,8 +19,8 @@ where
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type InitError = ();
     type Transform = PermissionMiddlewareService<S>;
+    type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
@@ -50,78 +50,63 @@ where
     }
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        let service = Rc::clone(&self.service);
+
+        let srv = self.service.clone();
         let pool = self.pool.clone();
 
         Box::pin(async move {
 
-            // 🔹 Obtener claims del JWT
-            let claims = req.extensions().get::<Claims>().cloned();
+            let id_perfil = match req.extensions().get::<i32>() {
+                Some(p) => *p,
+                None => return Err(ErrorUnauthorized("No perfil")),
+            };
 
-            if claims.is_none() {
-                return Err(actix_web::error::ErrorUnauthorized("No autorizado"));
-            }
+            let path = req.path().replace("/api/", "");
+            let nombre_modulo = path.split('/').next().unwrap_or("");
 
-            let claims = claims.unwrap();
-            let id_perfil = claims.id_perfil;
-
-            // 🔹 Obtener nombre del módulo desde la ruta
-            let path = req.path(); // ej: /api/perfil
-            let segments: Vec<&str> = path.split('/').collect();
-
-            if segments.len() < 3 {
-                return Err(actix_web::error::ErrorUnauthorized("Ruta inválida"));
-            }
-
-            let nombre_modulo = segments[2]; // perfil, usuario, modulo...
-
-            // 🔹 Obtener método HTTP
-            let method = req.method().as_str();
-
-            // 🔹 Consultar permisos en BD
-            let permiso = sqlx::query!(
+            let permiso = sqlx::query(
                 r#"
-                SELECT p.bitagregar, p.biteditar, p.bitconsulta,
-                       p.biteliminar, p.bitdetalle
-                FROM permisosperfil p
-                JOIN modulo m ON m.id = p.idmodulo
-                WHERE p.idperfil = $1
-                AND LOWER(m.strnombremodulo) = LOWER($2)
-                "#,
-                id_perfil,
-                nombre_modulo
+                SELECT bitagregar, biteditar, biteliminar,
+                       bitdetalle, bitconsulta
+                FROM permisosperfil pp
+                JOIN modulo m ON m.id = pp.idmodulo
+                WHERE pp.idperfil = $1
+                AND m.strnombremodulo = $2
+                "#
             )
+            .bind(id_perfil)
+            .bind(nombre_modulo)
             .fetch_optional(&pool)
             .await
             .unwrap();
 
             if permiso.is_none() {
-                return Err(actix_web::error::ErrorUnauthorized("Sin permisos"));
+                return Err(ErrorUnauthorized("Sin permisos"));
             }
 
             let p = permiso.unwrap();
 
-            // 🔥 Validar según método
-            let autorizado = match method {
-                "POST" => p.bitagregar,
-                "PUT" => p.biteditar,
-                "DELETE" => p.biteliminar,
-                "GET" => {
-                    if path.split('/').count() > 3 {
-                        p.bitdetalle
-                    } else {
-                        p.bitconsulta
-                    }
-                }
+            let bitagregar: bool = p.get("bitagregar");
+            let biteditar: bool = p.get("biteditar");
+            let biteliminar: bool = p.get("biteliminar");
+            let bitdetalle: bool = p.get("bitdetalle");
+            let bitconsulta: bool = p.get("bitconsulta");
+
+            let metodo = req.method().as_str();
+
+            let autorizado = match metodo {
+                "POST" => bitagregar,
+                "PUT" => biteditar,
+                "DELETE" => biteliminar,
+                "GET" => bitconsulta || bitdetalle,
                 _ => false,
             };
 
             if !autorizado {
-                return Err(actix_web::error::ErrorUnauthorized("Acción no permitida"));
+                return Err(ErrorUnauthorized("Acceso denegado"));
             }
 
-            let res = service.call(req).await?;
-            Ok(res)
+            srv.call(req).await
         })
     }
 }

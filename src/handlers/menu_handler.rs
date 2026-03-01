@@ -9,7 +9,7 @@ pub async fn mis_permisos(
     req: HttpRequest,
 ) -> HttpResponse {
 
-    // 🔹 Obtener claims del JWT (insertado por middleware)
+    // 🔹 Obtener claims del JWT
     let claims = req.extensions().get::<Claims>().cloned();
 
     if claims.is_none() {
@@ -18,9 +18,8 @@ pub async fn mis_permisos(
 
     let id_perfil = claims.unwrap().id_perfil;
 
-    // 🔹 Traer solo módulos con al menos un permiso activo
-    let permisos = sqlx::query_as!(
-        PermisoModulo,
+    // 🔥 AQUÍ ESTÁ EL CAMBIO (sin !)
+    let permisos = sqlx::query_as::<_, PermisoModulo>(
         r#"
         SELECT 
             m.strnombremodulo as modulo,
@@ -40,9 +39,9 @@ pub async fn mis_permisos(
             p.bitdetalle = true
         )
         ORDER BY m.strnombremodulo
-        "#,
-        id_perfil
+        "#
     )
+    .bind(id_perfil)
     .fetch_all(pool.get_ref())
     .await;
 

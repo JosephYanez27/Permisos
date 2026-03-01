@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
-
-#[derive(Serialize)]
+use sqlx::FromRow;
+#[derive(Serialize,FromRow)]
 pub struct PermisoPerfil {
     pub id: i32,
     pub idperfil: i32,
@@ -12,7 +12,7 @@ pub struct PermisoPerfil {
     pub bitdetalle: bool,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize,FromRow)]
 pub struct CrearPermisoPerfil {
     pub idperfil: i32,
     pub idmodulo: i32,

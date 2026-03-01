@@ -4,7 +4,7 @@ use actix_files::Files;
 use dotenv::dotenv;
 use std::env;
 use bcrypt::{hash, DEFAULT_COST};
-
+use sqlx::Row;
 mod db;
 mod middleware;
 mod handlers;
@@ -31,17 +31,20 @@ async fn seed_database(pool: &sqlx::PgPool) {
 
     println!("🌱 Ejecutando seed...");
 
-    let perfil = sqlx::query!(
+    // ===============================
+    // 🔎 Buscar perfil Administrador
+    // ===============================
+    let perfil = sqlx::query(
         "SELECT id FROM perfil WHERE strnombreperfil = 'Administrador'"
     )
     .fetch_optional(pool)
     .await
     .unwrap();
 
-    let id_perfil = if let Some(p) = perfil {
-        p.id
+    let id_perfil: i32 = if let Some(row) = perfil {
+        row.get("id")
     } else {
-        let result = sqlx::query!(
+        let result = sqlx::query(
             "INSERT INTO perfil (strnombreperfil, bitadministrador)
              VALUES ('Administrador', true)
              RETURNING id"
@@ -50,9 +53,12 @@ async fn seed_database(pool: &sqlx::PgPool) {
         .await
         .unwrap();
 
-        result.id
+        result.get("id")
     };
 
+    // ===============================
+    // 📦 Insertar módulos base
+    // ===============================
     let modulos_base = vec![
         "perfil",
         "usuario",
@@ -65,24 +71,30 @@ async fn seed_database(pool: &sqlx::PgPool) {
     ];
 
     for nombre in modulos_base {
-        sqlx::query!(
+        sqlx::query(
             "INSERT INTO modulo (strnombremodulo)
              VALUES ($1)
-             ON CONFLICT (strnombremodulo) DO NOTHING",
-            nombre
+             ON CONFLICT (strnombremodulo) DO NOTHING"
         )
+        .bind(nombre)
         .execute(pool)
         .await
         .unwrap();
     }
 
-    let modulos = sqlx::query!("SELECT id FROM modulo")
+    // ===============================
+    // 🔎 Obtener módulos
+    // ===============================
+    let modulos = sqlx::query("SELECT id FROM modulo")
         .fetch_all(pool)
         .await
         .unwrap();
 
     for m in modulos {
-        sqlx::query!(
+
+        let id_modulo: i32 = m.get("id");
+
+        sqlx::query(
             r#"
             INSERT INTO permisosperfil (
                 idperfil, idmodulo,
@@ -91,16 +103,19 @@ async fn seed_database(pool: &sqlx::PgPool) {
             )
             VALUES ($1, $2, true, true, true, true, true)
             ON CONFLICT DO NOTHING
-            "#,
-            id_perfil,
-            m.id
+            "#
         )
+        .bind(id_perfil)
+        .bind(id_modulo)
         .execute(pool)
         .await
         .unwrap();
     }
 
-    let usuario = sqlx::query!(
+    // ===============================
+    // 🔎 Buscar superadmin
+    // ===============================
+    let usuario = sqlx::query(
         "SELECT id FROM usuario WHERE strnombreusuario = 'superadmin'"
     )
     .fetch_optional(pool)
@@ -111,7 +126,7 @@ async fn seed_database(pool: &sqlx::PgPool) {
 
         let hashed_pwd = hash("123456", DEFAULT_COST).unwrap();
 
-        sqlx::query!(
+        sqlx::query(
             r#"
             INSERT INTO usuario (
                 strnombreusuario,
@@ -122,13 +137,13 @@ async fn seed_database(pool: &sqlx::PgPool) {
                 strnumerocelular
             )
             VALUES ($1, $2, $3, 1, $4, $5)
-            "#,
-            "superadmin",
-            id_perfil,
-            hashed_pwd,
-            "admin@admin.com",
-            "0000000000"
+            "#
         )
+        .bind("superadmin")
+        .bind(id_perfil)
+        .bind(hashed_pwd)
+        .bind("admin@admin.com")
+        .bind("0000000000")
         .execute(pool)
         .await
         .unwrap();
@@ -210,7 +225,7 @@ async fn main() -> std::io::Result<()> {
                     .service(update_permiso)
                     .service(delete_permiso)
 
-                    .service(mis_permisos)
+                   
 
                     .service(principal1)
                     .service(principal1_1)
