@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Permisos Perfil</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="breadcrumb">
+    <a href="menu.html">Menú</a> > Seguridad > Permisos Perfil
+</div>
+
+<h2>Permisos Perfil</h2>
+
+<div class="filtro-container">
+    <label>Perfil:</label>
+    <select id="perfil-select"></select>
+    <button onclick="buscarPermisos()">Buscar</button>
+</div>
+
+<h3>[Módulos Web]</h3>
+
+<table class="tabla-permisos">
+    <thead>
+        <tr>
+            <th>Módulo</th>
+            <th>Agregar</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+            <th>Consultar</th>
+            <th>Detalle</th>
+        </tr>
+    </thead>
+    <tbody id="tabla-permisos">
+        <!-- Se llena dinámicamente -->
+    </tbody>
+</table>
+
+<div class="acciones">
+    <button onclick="guardarPermisos()">Guardar</button>
+    <button onclick="window.location.href='menu.html'">Cancelar</button>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/permisos.js"></script>
+
+</body>
+</html>

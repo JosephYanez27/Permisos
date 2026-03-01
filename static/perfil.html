@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Perfil</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="breadcrumb">
+    <a href="menu.html">Menú</a> > Perfil
+</div>
+
+<h2>Perfil</h2>
+
+<button onclick="listarPerfiles()">Consultar</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Administrador</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody id="tabla-perfil"></tbody>
+</table>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+header {
+    background: #1f3c5c;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background: #1f3c5c;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.filtro-container {
+    margin: 20px 0;
+}
+
+.tabla-permisos th {
+    background: #1f3c5c;
+    color: white;
+}
+
+.tabla-permisos td {
+    text-align: center;
+}
+
+.acciones {
+    margin-top: 20px;
+}
+
+.acciones button {
+    margin-right: 10px;
+}
+
+.filtros-usuario {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtros-usuario div {
+    display: flex;
+    flex-direction: column;
+}
+
+.tabla-usuarios th {
+    background: #1f3c5c;
+    color: white;
+}
+
+.tabla-usuarios td {
+    text-align: center;
+}
+
+.btn-agregar {
+    margin-bottom: 10px;
+}
+
+.paginacion {
+    margin-top: 15px;
+}

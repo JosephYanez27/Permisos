@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Usuario</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="breadcrumb">
+    <a href="menu.html">Menú</a> > Seguridad > Usuario
+</div>
+
+<h2>Usuario</h2>
+
+<div class="filtros-usuario">
+
+    <div>
+        <label>Usuario:</label>
+        <input type="text" id="filtro-usuario">
+    </div>
+
+    <div>
+        <label>Perfil:</label>
+        <select id="filtro-perfil"></select>
+    </div>
+
+    <div>
+        <label>Estado:</label>
+        <select id="filtro-estado">
+            <option value="">Todos</option>
+            <option value="1">Activo</option>
+            <option value="2">Inactivo</option>
+        </select>
+    </div>
+
+    <div class="acciones-filtro">
+        <button onclick="buscarUsuarios()">Buscar</button>
+        <button onclick="limpiarFiltros()">Limpiar</button>
+    </div>
+
+</div>
+
+<div class="btn-agregar">
+    <button onclick="abrirModalUsuario()">➕ Agregar Usuario</button>
+</div>
+
+<h3>[Resultados]</h3>
+
+<table class="tabla-usuarios">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Perfil</th>
+            <th>Estado</th>
+            <th>Correo</th>
+            <th>Celular</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody id="tabla-usuarios">
+        <!-- Se llena dinámicamente -->
+    </tbody>
+</table>
+
+<div class="paginacion">
+    <button onclick="anterior()">Anterior</button>
+    <span id="pagina-actual">1</span>
+    <button onclick="siguiente()">Siguiente</button>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/usuario.js"></script>
+
+</body>
+</html>

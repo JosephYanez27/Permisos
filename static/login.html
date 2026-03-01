@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body class="login-body">
+
+<div class="login-container">
+    <h2>Iniciar Sesión</h2>
+
+    <input type="text" id="usuario" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <div class="g-recaptcha" data-sitekey="6LeRYXwsAAAAAFwpgd-FeSOUQMrVH4o7O8emtzyK"></div>
+
+    <button onclick="login()">Ingresar</button>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>
