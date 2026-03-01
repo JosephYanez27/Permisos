@@ -6,30 +6,13 @@ use std::env;
 use bcrypt::{hash, DEFAULT_COST};
 
 mod db;
-mod middleware {
-    pub mod jwt_middleware;
-    pub mod permission_middleware;
-}
-mod handlers {
-    pub mod auth_handler;
-    pub mod perfil_handler;
-    pub mod usuario_handler;
-    pub mod modulo_handler;
-    pub mod permisos_handler;
-    pub mod principal_handler;
-}
-mod utils {
-    pub mod jwt;
-    pub mod hash;
-    pub mod recaptcha;
-}
-mod models {
-    pub mod usuario;
-    pub mod perfil;
-    pub mod permisos;
-}
+mod middleware;
+mod handlers;
+mod utils;
+mod models;
 
 use db::connect_db;
+
 use middleware::jwt_middleware::JwtMiddleware;
 use middleware::permission_middleware::PermissionMiddleware;
 
@@ -38,14 +21,8 @@ use handlers::perfil_handler::*;
 use handlers::usuario_handler::*;
 use handlers::modulo_handler::*;
 use handlers::permisos_handler::*;
-use handlers::principal_handler::{
-    principal1,
-    principal1_1,
-    principal1_2,
-    principal2,
-    principal2_1,
-    principal2_2,
-};
+use handlers::principal_handler::*;
+
 
 /// ===============================
 /// 🔥 SEED AUTOMÁTICO
@@ -54,7 +31,6 @@ async fn seed_database(pool: &sqlx::PgPool) {
 
     println!("🌱 Ejecutando seed...");
 
-    // PERFIL ADMIN
     let perfil = sqlx::query!(
         "SELECT id FROM perfil WHERE strnombreperfil = 'Administrador'"
     )
@@ -77,7 +53,6 @@ async fn seed_database(pool: &sqlx::PgPool) {
         result.id
     };
 
-    // MODULOS BASE
     let modulos_base = vec![
         "perfil",
         "usuario",
@@ -101,7 +76,6 @@ async fn seed_database(pool: &sqlx::PgPool) {
         .unwrap();
     }
 
-    // PERMISOS ADMIN
     let modulos = sqlx::query!("SELECT id FROM modulo")
         .fetch_all(pool)
         .await
@@ -126,7 +100,6 @@ async fn seed_database(pool: &sqlx::PgPool) {
         .unwrap();
     }
 
-    // SUPERADMIN
     let usuario = sqlx::query!(
         "SELECT id FROM usuario WHERE strnombreusuario = 'superadmin'"
     )
@@ -177,7 +150,6 @@ async fn main() -> std::io::Result<()> {
 
     let pool = connect_db().await;
 
-    // Seed
     seed_database(&pool).await;
 
     let port: u16 = env::var("PORT")

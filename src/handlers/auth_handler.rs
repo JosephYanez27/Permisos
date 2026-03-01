@@ -13,9 +13,18 @@ pub async fn login(
     // 🔐 1️⃣ VALIDAR RECAPTCHA PRIMERO
     let captcha_valido = verify_recaptcha(&data.recaptcha_token).await;
 
-    if !captcha_valido {
+    match captcha_valido {
+    Ok(true) => {
+        // captcha correcto, continuar login
+    }
+    Ok(false) => {
         return HttpResponse::Unauthorized().body("Captcha inválido");
     }
+    Err(_) => {
+        return HttpResponse::InternalServerError()
+            .body("Error verificando reCAPTCHA");
+    }
+}
 
     // 🔎 2️⃣ Buscar usuario
     let usuario = sqlx::query!(

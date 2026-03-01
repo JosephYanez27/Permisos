@@ -1,6 +1,6 @@
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
-    Error, HttpResponse,
+    Error, HttpResponse,HttpMessage
 };
 use futures::future::{ok, Ready, LocalBoxFuture};
 use std::rc::Rc;
@@ -44,7 +44,7 @@ where
         self.service.poll_ready(ctx)
     }
 
-    fn call(&self, mut req: ServiceRequest) -> Self::Future {
+    fn call(&self,  req: ServiceRequest) -> Self::Future {
         let service = Rc::clone(&self.service);
 
         Box::pin(async move {

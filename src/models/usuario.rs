@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct LoginRequest {
     pub usuario: String,
     pub password: String,
+    pub recaptcha_token: String,
 }
 #[derive(Serialize)]
 pub struct Usuario {
