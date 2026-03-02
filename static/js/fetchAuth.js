@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+
 
 function fetchAuth(endpoint, options = {}) {
 
