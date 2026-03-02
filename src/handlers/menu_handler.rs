@@ -1,4 +1,4 @@
-use actix_web::{get, web, HttpRequest, HttpResponse};
+use actix_web::{get, web, HttpRequest, HttpResponse, HttpMessage};
 use sqlx::PgPool;
 use crate::utils::jwt::Claims;
 use crate::models::permisos::PermisoModulo;

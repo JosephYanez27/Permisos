@@ -22,6 +22,7 @@ use handlers::usuario_handler::*;
 use handlers::modulo_handler::*;
 use handlers::permisos_handler::*;
 use handlers::principal_handler::*;
+use handlers::menu_handler::*;
 
 
 /// ===============================
@@ -221,7 +222,7 @@ async fn main() -> std::io::Result<()> {
                     .service(update_permiso)
                     .service(delete_permiso)
 
-                   
+                    .service(mis_permisos)
 
                     .service(principal1)
                     .service(principal1_1)
