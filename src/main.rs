@@ -186,11 +186,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .app_data(web::Data::new(pool.clone()))
 
-            // 📁 STATIC
-            .service(
-                Files::new("/", "./static")
-                    .index_file("login.html")
-            )
+          
 
             // 🔓 LOGIN
             .service(login)
@@ -233,6 +229,11 @@ async fn main() -> std::io::Result<()> {
                     .service(principal2)
                     .service(principal2_1)
                     .service(principal2_2)
+            )
+              // 📁 STATIC
+            .service(
+                Files::new("/", "./static")
+                    .index_file("login.html")
             )
     })
     .bind(("0.0.0.0", port))?
