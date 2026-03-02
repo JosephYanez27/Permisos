@@ -1,4 +1,6 @@
-function fetchAuth(url, options = {}) {
+const API_BASE = "/api";
+
+function fetchAuth(endpoint, options = {}) {
 
     const token = localStorage.getItem("token");
 
@@ -7,7 +9,7 @@ function fetchAuth(url, options = {}) {
         return null;
     }
 
-    return fetch(url, {
+    return fetch(API_BASE + endpoint, {   // 🔥 AQUÍ SE CONCATENA
         ...options,
         headers: {
             "Content-Type": "application/json",
