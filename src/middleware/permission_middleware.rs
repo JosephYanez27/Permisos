@@ -7,7 +7,7 @@ use sqlx::{PgPool, Row};
 use actix_web::error::ErrorUnauthorized;
 use std::task::{Context, Poll};
 use std::rc::Rc;
-
+    use crate::utils::jwt::Claims;
 pub struct PermissionMiddleware {
     pub pool: PgPool,
 }
@@ -56,10 +56,14 @@ where
 
         Box::pin(async move {
 
-            let id_perfil = match req.extensions().get::<i32>() {
-                Some(p) => *p,
-                None => return Err(ErrorUnauthorized("No perfil")),
-            };
+       
+
+let claims = match req.extensions().get::<Claims>() {
+    Some(c) => c,
+    None => return Err(ErrorUnauthorized("No perfil")),
+};
+
+let id_perfil = claims.id_perfil;
 
             let path = req.path().replace("/api/", "");
             let nombre_modulo = path.split('/').next().unwrap_or("");
