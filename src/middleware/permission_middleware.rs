@@ -4,10 +4,11 @@ use actix_web::{
 };
 use futures::future::{ok, Ready, LocalBoxFuture};
 use sqlx::{PgPool, Row};
-use actix_web::error::ErrorUnauthorized;
+use actix_web::error::{ErrorUnauthorized, ErrorInternalServerError};
 use std::task::{Context, Poll};
 use std::rc::Rc;
 use crate::utils::jwt::Claims;
+
 pub struct PermissionMiddleware {
     pub pool: PgPool,
 }
@@ -49,59 +50,86 @@ where
         self.service.poll_ready(ctx)
     }
 
-fn call(&self, req: ServiceRequest) -> Self::Future {
-    let srv = self.service.clone();
-    let pool = self.pool.clone();
+    fn call(&self, req: ServiceRequest) -> Self::Future {
+        let srv = self.service.clone();
+        let pool = self.pool.clone();
 
-    Box::pin(async move {
-        // --- PASO 1: Extraer datos y liberar el préstamo ---
-        let id_perfil = {
-            let extensions = req.extensions();
-            let claims = extensions.get::<Claims>()
-                .ok_or_else(|| ErrorUnauthorized("No perfil"))?;
-            
-            // Extraemos solo el valor que necesitamos (asumiendo que id_perfil es Copy o Clone)
-            claims.id_perfil 
-        }; // <--- Aquí 'extensions' sale de ámbito y el préstamo de 'req' termina.
+        Box::pin(async move {
 
-        // --- PASO 2: Lógica de base de datos ---
-        let path = req.path().replace("/api/", "");
-        let nombre_modulo = path.split('/').next().unwrap_or("");
+            // ==============================
+            // 1️⃣ Extraer id_perfil del JWT
+            // ==============================
+            let id_perfil = {
+                let extensions = req.extensions();
 
-        let row = sqlx::query(
-            r#"
-            SELECT bitagregar, biteditar, biteliminar, 
-                   bitdetalle, bitconsulta
-            FROM permisosperfil pp
-            JOIN modulo m ON m.id = pp.idmodulo
-            WHERE pp.idperfil = $1
-            AND m.strnombremodulo = $2
-            "#
-        )
-        .bind(id_perfil)
-        .bind(nombre_modulo)
-        .fetch_optional(&pool)
-        .await
-        .map_err(|e| actix_web::error::ErrorInternalServerError(e))?; // Manejo de error de DB
+                let claims = extensions
+                    .get::<Claims>()
+                    .ok_or_else(|| ErrorUnauthorized("No perfil"))?;
 
-        let p = row.ok_or_else(|| ErrorUnauthorized("Sin permisos"))?;
+                claims.id_perfil
+            };
+            // 🔥 Aquí se libera el préstamo de req.extensions()
 
-        // --- PASO 3: Validación de métodos ---
-        let autorizado = match *req.method() {
-            actix_web::http::Method::POST => p.get::<bool, _>("bitagregar"),
-            actix_web::http::Method::PUT => p.get::<bool, _>("biteditar"),
-            actix_web::http::Method::DELETE => p.get::<bool, _>("biteliminar"),
-            actix_web::http::Method::GET => p.get::<bool, _>("bitconsulta") || p.get::<bool, _>("bitdetalle"),
-            _ => false,
-        };
+            // ==============================
+            // 2️⃣ Determinar módulo por URL
+            // ==============================
+            let path = req.path().replace("/api/", "");
+            let nombre_modulo = path.split('/').next().unwrap_or("");
 
-        if !autorizado {
-            return Err(ErrorUnauthorized("Acceso denegado"));
-        }
+            // 🔥 EXCLUIR rutas que no son módulos reales
+            if nombre_modulo == "mis-permisos" {
+                return srv.call(req).await;
+            }
 
-        // --- PASO 4: Mover 'req' al siguiente servicio ---
-        // Ahora req está libre de préstamos y puede moverse con éxito
-        srv.call(req).await
-    })
-}
+            // ==============================
+            // 3️⃣ Consultar permisos en DB
+            // ==============================
+            let row = sqlx::query(
+                r#"
+                SELECT bitagregar, biteditar, biteliminar,
+                       bitdetalle, bitconsulta
+                FROM permisosperfil pp
+                JOIN modulo m ON m.id = pp.idmodulo
+                WHERE pp.idperfil = $1
+                AND m.strnombremodulo = $2
+                "#
+            )
+            .bind(id_perfil)
+            .bind(nombre_modulo)
+            .fetch_optional(&pool)
+            .await
+            .map_err(ErrorInternalServerError)?;
+
+            let p = row.ok_or_else(|| ErrorUnauthorized("Sin permisos"))?;
+
+            // ==============================
+            // 4️⃣ Validar método HTTP
+            // ==============================
+            let autorizado = match *req.method() {
+                actix_web::http::Method::POST =>
+                    p.get::<bool, _>("bitagregar"),
+
+                actix_web::http::Method::PUT =>
+                    p.get::<bool, _>("biteditar"),
+
+                actix_web::http::Method::DELETE =>
+                    p.get::<bool, _>("biteliminar"),
+
+                actix_web::http::Method::GET =>
+                    p.get::<bool, _>("bitconsulta")
+                    || p.get::<bool, _>("bitdetalle"),
+
+                _ => false,
+            };
+
+            if !autorizado {
+                return Err(ErrorUnauthorized("Acceso denegado"));
+            }
+
+            // ==============================
+            // 5️⃣ Continuar al handler
+            // ==============================
+            srv.call(req).await
+        })
+    }
 }
