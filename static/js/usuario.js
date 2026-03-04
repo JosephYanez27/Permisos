@@ -101,3 +101,9 @@ function limpiarFiltros() {
     pagina = 1;
     buscarUsuarios();
 }
+
+window.buscarUsuarios = buscarUsuarios;
+window.abrirModalUsuario = abrirModalUsuario;
+window.siguiente = siguiente;
+window.anterior = anterior;
+window.limpiarFiltros = limpiarFiltros;

@@ -18,3 +18,4 @@ function fetchAuth(endpoint, options = {}) {
         }
     });
 }
+window.fetchAuth = fetchAuth;
