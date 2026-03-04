@@ -20,24 +20,20 @@ async function cargarPerfilesFiltro() {
     });
 }
 
-// 🔹 Buscar usuarios con filtros
 async function buscarUsuarios() {
-
-    const usuario = document.getElementById("filtro-usuario").value;
-    const perfil = document.getElementById("filtro-perfil").value;
-    const estado = document.getElementById("filtro-estado").value;
-
-    let query = `/usuario?page=${pagina}`;
-
-    if (usuario) query += `&usuario=${usuario}`;
-    if (perfil) query += `&perfil=${perfil}`;
-    if (estado) query += `&estado=${estado}`;
-
+    // ... tu lógica de query ...
     const response = await fetchAuth(query);
     if (!response) return;
 
-    const data = await response.json();
+    // VALIDACIÓN CRUCIAL:
+    if (!response.ok) {
+        const mensaje = await response.text(); 
+        console.error("Error del servidor:", mensaje);
+        // Si el error es "No perfil", es problema del Middleware en Rust
+        return; 
+    }
 
+    const data = await response.json();
     renderTabla(data);
 }
 
@@ -101,9 +97,70 @@ function limpiarFiltros() {
     pagina = 1;
     buscarUsuarios();
 }
+let idUsuarioEdicion = null; // Para saber si editamos o creamos
+
+// Función que llama el botón ➕ Agregar Usuario
+function abrirModalUsuario() {
+    idUsuarioEdicion = null;
+    // Aquí deberías limpiar los campos de tu modal
+    // Ejemplo: document.getElementById("form-usuario").reset();
+    alert("Aquí deberías mostrar tu modal de registro");
+    // Si usas un modal real de CSS/JS, cámbialo por:
+    // document.getElementById("miModal").style.display = "block";
+}
+
+// Función para capturar los datos y enviar al servidor
+async function guardarUsuario() {
+    const usuarioData = {
+        strnombreusuario: document.getElementById("nombre").value,
+        idperfil: parseInt(document.getElementById("perfil").value),
+        idestado: parseInt(document.getElementById("estado").value),
+        strcorreo: document.getElementById("correo").value,
+        strnumerocelular: document.getElementById("celular").value,
+        // Agrega aquí el password si es nuevo
+    };
+
+    const metodo = idUsuarioEdicion ? "PUT" : "POST";
+    const endpoint = idUsuarioEdicion ? `/usuario/${idUsuarioEdicion}` : "/usuario";
+
+    const response = await fetchAuth(endpoint, {
+        method: metodo,
+        body: JSON.stringify(usuarioData)
+    });
+
+    if (response && response.ok) {
+        alert(idUsuarioEdicion ? "Actualizado con éxito" : "Creado con éxito");
+        // cerrarModal();
+        buscarUsuarios();
+    } else {
+        const error = await response.text();
+        alert("Error al guardar: " + error);
+    }
+}
+
+// Función que se llama desde el botón "Editar" de la tabla
+async function editar(id) {
+    idUsuarioEdicion = id;
+    
+    // 1. Obtener los datos actuales del usuario
+    const response = await fetchAuth(`/usuario/${id}`);
+    if (!response || !response.ok) return;
+
+    const u = await response.json();
+
+    // 2. Llenar el modal con los datos
+    // document.getElementById("nombre").value = u.strnombreusuario;
+    // document.getElementById("perfil").value = u.idperfil;
+    
+    alert("Cargando datos del usuario " + id + " para editar...");
+    // document.getElementById("miModal").style.display = "block";
+}
 
 window.buscarUsuarios = buscarUsuarios;
 window.abrirModalUsuario = abrirModalUsuario;
 window.siguiente = siguiente;
 window.anterior = anterior;
+window.abrirModalUsuario = abrirModalUsuario;
+window.guardarUsuario = guardarUsuario;
+window.editar = editar;
 window.limpiarFiltros = limpiarFiltros;
