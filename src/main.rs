@@ -195,8 +195,9 @@ async fn main() -> std::io::Result<()> {
             // 🔐 API PROTEGIDA
             .service(
                 web::scope("/api")
-                    .wrap(JwtMiddleware)
                     .wrap(PermissionMiddleware { pool: pool.clone() })
+                    .wrap(JwtMiddleware)
+                  
 
                     .service(get_perfiles)
                     .service(get_perfil_by_id)
