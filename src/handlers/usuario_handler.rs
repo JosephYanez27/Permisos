@@ -3,7 +3,7 @@ use sqlx::PgPool;
 use std::collections::HashMap;
 use bcrypt::{hash, DEFAULT_COST};
 use crate::models::usuario::{Usuario, CrearUsuario};
-
+use crate::utils::email::enviar_credenciales;
 //
 // 📌 GET USUARIOS (Paginado)
 //
@@ -90,7 +90,9 @@ pub async fn create_usuario(
         return HttpResponse::BadRequest().body("Campos obligatorios vacíos");
     }
 
-    let hashed_password = match hash(&data.strpwd, DEFAULT_COST) {
+    let plain_password = data.strpwd.clone();
+
+    let hashed_password = match hash(&plain_password, DEFAULT_COST) {
         Ok(h) => h,
         Err(_) => return HttpResponse::InternalServerError().body("Error hash password"),
     };
@@ -118,7 +120,19 @@ pub async fn create_usuario(
     .await;
 
     match result {
-        Ok(_) => HttpResponse::Ok().body("Usuario creado"),
+
+        Ok(_) => {
+
+            // 🔹 Enviar correo
+            let _ = enviar_credenciales(
+                &data.strcorreo,
+                &data.strnombreusuario,
+                &plain_password
+            );
+
+            HttpResponse::Ok().body("Usuario creado y correo enviado")
+        }
+
         Err(_) => HttpResponse::InternalServerError().body("Error creando usuario"),
     }
 }
