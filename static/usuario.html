@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
+<div id="menu"></div>
 <div class="breadcrumb">
     <a href="menu.html">Menú</a> > Seguridad > Usuario
 </div>
@@ -64,6 +64,13 @@
     </tbody>
 </table>
 
+
+
+<div class="paginacion">
+    <button onclick="anterior()">Anterior</button>
+    <span id="pagina-actual">1</span>
+    <button onclick="siguiente()">Siguiente</button>
+</div>
 <div id="modalUsuario" class="modal">
 
 <div class="modal-content">
@@ -94,12 +101,6 @@
 <button onclick="cerrarModal()">Cancelar</button>
 
 </div>
-</div>
-
-<div class="paginacion">
-    <button onclick="anterior()">Anterior</button>
-    <span id="pagina-actual">1</span>
-    <button onclick="siguiente()">Siguiente</button>
 </div>
 
 <script src="js/config.js"></script>

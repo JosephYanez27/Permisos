@@ -37,7 +37,7 @@ async function buscarUsuarios() {
     const perfil = document.getElementById("filtro-perfil").value;
     const estado = document.getElementById("filtro-estado").value;
 
-    let query = `/usuario?page=${pagina}`;
+  let query = "/usuario?page=" + pagina; 
 
     if (usuario) query += `&usuario=${encodeURIComponent(usuario)}`;
     if (perfil) query += `&perfil=${perfil}`;
@@ -216,7 +216,11 @@ async function editar(id) {
 
     document.getElementById("modalUsuario").style.display = "block";
 }
-
+fetch("/menu.html")
+.then(res => res.text())
+.then(html => {
+    document.getElementById("menu").innerHTML = html;
+});
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
 window.siguiente = siguiente;
