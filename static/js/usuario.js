@@ -171,6 +171,13 @@ async function editar(id) {
     alert("Cargando datos del usuario " + id + " para editar...");
     // document.getElementById("miModal").style.display = "block";
 }
+function abrirModal(){
+document.getElementById("modalUsuario").style.display="block";
+}
+
+function cerrarModal(){
+document.getElementById("modalUsuario").style.display="none";
+}
 
 window.buscarUsuarios = buscarUsuarios;
 window.abrirModalUsuario = abrirModalUsuario;
@@ -180,3 +187,5 @@ window.abrirModalUsuario = abrirModalUsuario;
 window.guardarUsuario = guardarUsuario;
 window.editar = editar;
 window.limpiarFiltros = limpiarFiltros;
+window.cerrarModal=cerrarModal;
+window.abrirModal=abrirModal;
