@@ -1,7 +1,6 @@
 async function cargarMenu() {
 
-    const response = await fetchAuth("/mis-permisos");
-
+    const response = await fetchAuth("/api/mis-permisos");
     if (!response) return;
 
     const permisos = await response.json();
@@ -9,14 +8,42 @@ async function cargarMenu() {
     const menu = document.getElementById("menu-list");
     menu.innerHTML = "";
 
+    const grupos = {};
+
+    // Agrupar por menú
     permisos.forEach(p => {
 
-        const li = document.createElement("li");
-        const modulo = p.modulo.toLowerCase();
+        const padre = p.menu || "General";
 
-        li.innerHTML = `<a href="${modulo}.html">${p.modulo}</a>`;
-        menu.appendChild(li);
+        if (!grupos[padre]) {
+            grupos[padre] = [];
+        }
+
+        grupos[padre].push(p);
     });
+
+    // Crear menú
+    for (const padre in grupos) {
+
+        const liPadre = document.createElement("li");
+        liPadre.innerHTML = `<strong>${padre}</strong>`;
+
+        const ulHijos = document.createElement("ul");
+
+        grupos[padre].forEach(m => {
+
+            const modulo = m.modulo.toLowerCase();
+
+            ulHijos.innerHTML += `
+                <li>
+                    <a href="${modulo}.html">${m.modulo}</a>
+                </li>
+            `;
+        });
+
+        liPadre.appendChild(ulHijos);
+        menu.appendChild(liPadre);
+    }
 }
 
 cargarMenu();
