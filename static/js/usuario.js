@@ -21,16 +21,32 @@ async function cargarPerfilesFiltro() {
 }
 
 async function buscarUsuarios() {
-    // ... tu lógica de query ...
+    // 1. Obtener valores de los inputs
+    const usuarioInput = document.getElementById("filtro-usuario");
+    const perfilInput = document.getElementById("filtro-perfil");
+    const estadoInput = document.getElementById("filtro-estado");
+
+    const usuario = usuarioInput ? usuarioInput.value : "";
+    const perfil = perfilInput ? perfilInput.value : "";
+    const estado = estadoInput ? estadoInput.value : "";
+
+    // 2. DECLARAR la variable query (aquí es donde fallaba)
+    let query = `/usuario?page=${pagina}`;
+
+    // 3. Concatenar filtros
+    if (usuario) query += `&usuario=${encodeURIComponent(usuario)}`;
+    if (perfil) query += `&perfil=${perfil}`;
+    if (estado) query += `&estado=${estado}`;
+
+    console.log("Consultando a:", query); // Para depurar
+
     const response = await fetchAuth(query);
     if (!response) return;
 
-    // VALIDACIÓN CRUCIAL:
     if (!response.ok) {
-        const mensaje = await response.text(); 
-        console.error("Error del servidor:", mensaje);
-        // Si el error es "No perfil", es problema del Middleware en Rust
-        return; 
+        const errorText = await response.text();
+        console.error("Error en la petición:", errorText);
+        return;
     }
 
     const data = await response.json();

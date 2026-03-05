@@ -63,6 +63,37 @@
     </tbody>
 </table>
 
+<div id="modalUsuario" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2 id="modal-titulo">Nuevo Usuario</h2>
+        <hr>
+        <form id="form-usuario">
+            <div class="campo">
+                <label>Nombre de Usuario:</label>
+                <input type="text" id="nombre" required>
+            </div>
+            <div class="campo">
+                <label>Correo Electrónico:</label>
+                <input type="email" id="correo" required>
+            </div>
+            <div class="campo">
+                <label>Perfil:</label>
+                <select id="modal-perfil" required></select>
+            </div>
+            <div class="campo">
+                <label>Contraseña:</label>
+                <input type="password" id="password">
+                <small id="pass-help">(Dejar en blanco si no desea cambiarla)</small>
+            </div>
+            <div class="modal-acciones">
+                <button type="button" onclick="guardarUsuario()">Guardar</button>
+                <button type="button" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="paginacion">
     <button onclick="anterior()">Anterior</button>
     <span id="pagina-actual">1</span>
