@@ -1,15 +1,14 @@
-use serde::{Serialize, Deserialize};
-use sqlx::FromRow;
+use serde::Serialize;
 
-#[derive(Serialize, Deserialize, FromRow)]
-pub struct Modulo {
+#[derive(Serialize)]
+pub struct MenuItem {
     pub id: i32,
-    pub strnombremodulo: String,
-    pub idmodulopadre: Option<i32>
+    pub nombre: String,
+    pub hijos: Vec<MenuHijo>
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct CrearModulo {
-    pub strnombremodulo: String,
-    pub idmodulopadre: Option<i32>
+#[derive(Serialize)]
+pub struct MenuHijo {
+    pub id: i32,
+    pub nombre: String
 }

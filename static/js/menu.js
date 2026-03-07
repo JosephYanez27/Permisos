@@ -1,60 +1,35 @@
-async function cargarMenu() {
+async function cargarMenu(){
 
-    const response = await fetchAuth("/mis-permisos");
-    if (!response) return;
+ const res = await fetchAuth("/menu");
+ const data = await res.json();
 
-    const permisos = await response.json();
+ const menu = document.getElementById("menu-list");
 
-    const menu = document.getElementById("menu-list");
-    menu.innerHTML = "";
+ data.forEach(padre => {
 
-    const grupos = {};
+  let li = document.createElement("li");
 
-    permisos.forEach(p => {
+  li.innerHTML = `<strong>${padre.nombre}</strong>`;
 
-        const padre = p.menu || "General";
+  let ul = document.createElement("ul");
 
-        if (!grupos[padre]) {
-            grupos[padre] = [];
-        }
+  padre.hijos.forEach(hijo => {
 
-        grupos[padre].push(p);
-    });
+    ul.innerHTML += `
+      <li>
+        <a href="${hijo.nombre}.html">
+          ${hijo.nombre}
+        </a>
+      </li>
+    `;
 
-    for (const padre in grupos) {
+  });
 
-        const liPadre = document.createElement("li");
+  li.appendChild(ul);
+  menu.appendChild(li);
 
-        const titulo = document.createElement("div");
-        titulo.className = "menu-titulo";
-        titulo.textContent = padre;
+ });
 
-        const ulHijos = document.createElement("ul");
-        ulHijos.className = "submenu";
-
-        grupos[padre].forEach(m => {
-
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                <a href="${m.modulo.toLowerCase()}.html">
-                    ${m.modulo}
-                </a>
-            `;
-
-            ulHijos.appendChild(li);
-        });
-
-        // Toggle submenu
-        titulo.addEventListener("click", () => {
-            ulHijos.classList.toggle("activo");
-        });
-
-        liPadre.appendChild(titulo);
-        liPadre.appendChild(ulHijos);
-
-        menu.appendChild(liPadre);
-    }
 }
 
 cargarMenu();
