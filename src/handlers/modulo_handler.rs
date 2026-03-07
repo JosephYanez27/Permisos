@@ -11,12 +11,12 @@ pub async fn get_menu(
 ) -> HttpResponse {
 
     // 🔹 Obtener perfil del JWT
-    let claims = match req.extensions().get::<Claims>() {
-        Some(c) => c,
-        None => return HttpResponse::Unauthorized().body("No autorizado"),
-    };
+let claims = match req.extensions().get::<Claims>().cloned() {
+    Some(c) => c,
+    None => return HttpResponse::Unauthorized().body("No autorizado"),
+};
 
-    let id_perfil = claims.id_perfil;
+let id_perfil = claims.id_perfil;
 
     // 🔹 Obtener módulos con permisos
     let result = sqlx::query_as::<_, Modulo>(
