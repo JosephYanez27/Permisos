@@ -1,6 +1,6 @@
 async function cargarMenu() {
 
-    const response = await fetchAuth("/api/mis-permisos");
+    const response = await fetchAuth("/mis-permisos");
     if (!response) return;
 
     const permisos = await response.json();
