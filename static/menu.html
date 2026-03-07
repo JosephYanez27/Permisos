@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Menú</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
 <header>
@@ -12,11 +14,25 @@
 </header>
 
 <nav>
-    <ul id="menu-list"></ul>
+    <ul id="menu-list">
+        <!-- Aquí se cargará el menú dinámicamente -->
+    </ul>
 </nav>
 
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
 <script src="js/menu.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        cargarMenu();
+    });
+
+    function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    }
+</script>
+
 </body>
 </html>
