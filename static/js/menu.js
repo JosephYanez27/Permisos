@@ -15,13 +15,13 @@ async function cargarMenu(){
 
   padre.hijos.forEach(hijo => {
 
-    ul.innerHTML += `
-      <li>
-        <a href="${hijo.nombre}.html">
-          ${hijo.nombre}
-        </a>
-      </li>
-    `;
+   ul.innerHTML += `
+     <li>
+       <a href="${hijo.nombre}.html">
+         ${hijo.nombre}
+       </a>
+     </li>
+   `;
 
   });
 
@@ -31,5 +31,3 @@ async function cargarMenu(){
  });
 
 }
-
-cargarMenu();

@@ -211,11 +211,8 @@ async fn main() -> std::io::Result<()> {
                     .service(update_usuario)
                     .service(delete_usuario)
 
-                    .service(get_modulos)
-                    .service(get_modulo_by_id)
-                    .service(create_modulo)
-                    .service(update_modulo)
-                    .service(delete_modulo)
+                    .service(get_menu)
+                   
 
                     .service(get_permisos)
                     .service(get_permiso_by_id)
