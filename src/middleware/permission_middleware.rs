@@ -77,9 +77,9 @@ where
             let nombre_modulo = path.split('/').next().unwrap_or("");
 
             // 🔥 EXCLUIR rutas que no son módulos reales
-            if nombre_modulo == "mis-permisos" {
-                return srv.call(req).await;
-            }
+         if nombre_modulo == "mis-permisos" || nombre_modulo == "menu" {
+    return srv.call(req).await;
+}
 
             // ==============================
             // 3️⃣ Consultar permisos en DB
