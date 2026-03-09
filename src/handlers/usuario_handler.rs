@@ -116,7 +116,7 @@ pub async fn get_usuario_by_id(
 
 
 
-#[post("/usuarios")]
+#[post("/usuario")]
 pub async fn create_usuario(
     pool: web::Data<PgPool>,
     data: web::Json<CrearUsuario>,
@@ -175,7 +175,7 @@ pub async fn create_usuario(
     }
 }
 
-#[put("/usuarios/{id}")]
+#[put("/usuario/{id}")]
 pub async fn update_usuario(
     pool: web::Data<PgPool>,
     path: web::Path<i32>,
