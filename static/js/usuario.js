@@ -116,8 +116,8 @@ function renderTabla(data){
   tabla.innerHTML += `
   <tr>
    <td>${u.strnombreusuario ?? ""}</td>
-   <td>${u.idperfil ?? ""}</td>
-   <td>${u.idestadousuario ?? ""}</td>
+  <td>${u.perfil ?? ""}</td>
+<td>${u.estado ?? ""}</td>
    <td>${u.strcorreo ?? ""}</td>
    <td>${u.strnumerocelular ?? ""}</td>
 

@@ -21,7 +21,7 @@ pub async fn get_usuarios(
     let perfil = query.perfil.unwrap_or(0);
     let estado = query.estado.unwrap_or(0);
 
-    // 🔹 TOTAL REGISTROS
+    // TOTAL
     let total: (i64,) = sqlx::query_as(
         r#"
         SELECT COUNT(*)
@@ -39,22 +39,24 @@ pub async fn get_usuarios(
     .await
     .unwrap_or((0,));
 
-    // 🔹 DATA PAGINADA
+    // DATA
     let usuarios = sqlx::query_as::<_, Usuario>(
         r#"
         SELECT
-        id,
-        strnombreusuario,
-        idperfil,
-        idestadousuario,
-        strcorreo,
-        strnumerocelular
-        FROM usuario
+            u.id,
+            u.strnombreusuario,
+            p.strnombreperfil AS perfil,
+            e.strnombreestado AS estado,
+            u.strcorreo,
+            u.strnumerocelular
+        FROM usuario u
+        JOIN perfil p ON u.idperfil = p.idperfil
+        JOIN estadousuario e ON u.idestadousuario = e.idestadousuario
         WHERE
-        ($1 = '' OR strnombreusuario ILIKE '%' || $1 || '%')
-        AND ($2 = 0 OR idperfil = $2)
-        AND ($3 = 0 OR idestadousuario = $3)
-        ORDER BY strnombreusuario
+        ($1 = '' OR u.strnombreusuario ILIKE '%' || $1 || '%')
+        AND ($2 = 0 OR u.idperfil = $2)
+        AND ($3 = 0 OR u.idestadousuario = $3)
+        ORDER BY u.strnombreusuario
         LIMIT $4 OFFSET $5
         "#
     )
@@ -67,10 +69,10 @@ pub async fn get_usuarios(
     .await;
 
     match usuarios {
-       Ok(data) => HttpResponse::Ok().json(UsuarioResponse {
-    total: total.0,
-    data,
-}),
+        Ok(data) => HttpResponse::Ok().json(UsuarioResponse {
+            total: total.0,
+            data,
+        }),
         Err(e) => {
             println!("ERROR USUARIOS: {:?}", e);
             HttpResponse::InternalServerError().body("Error cargando usuarios")
