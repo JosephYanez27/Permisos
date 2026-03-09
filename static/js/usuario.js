@@ -286,8 +286,6 @@ fetch("/menu.html")
 });
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
-window.siguiente = siguiente;
-window.anterior = anterior;
 window.editar = editar;
 window.eliminar = eliminar;
 window.limpiarFiltros = limpiarFiltros;

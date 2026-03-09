@@ -11,8 +11,8 @@ pub struct LoginRequest {
 pub struct Usuario {
     pub id: i32,
     pub strnombreusuario: String,
-    pub idperfil: i32,
-    pub idestadousuario: i32,
+    pub perfil: String,
+    pub estado: String,
     pub strcorreo: String,
     pub strnumerocelular: String,
 }
