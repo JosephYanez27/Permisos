@@ -3,97 +3,114 @@ let idUsuarioEdicion = null;
 
 // 🔹 Cargar perfiles para filtro y modal
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarPerfiles();
+
+    // 🔹 Buscar mientras se escribe
+    document.getElementById("filtro-usuario")
+    .addEventListener("keyup", () => {
+        pagina = 1;
+        buscarUsuarios();
+    });
+
+    // 🔹 Filtro por perfil
+    document.getElementById("filtro-perfil")
+    .addEventListener("change", () => {
+        pagina = 1;
+        buscarUsuarios();
+    });
+
+    // 🔹 Filtro por estado
+    document.getElementById("filtro-estado")
+    .addEventListener("change", () => {
+        pagina = 1;
+        buscarUsuarios();
+    });
+
+    // 🔹 Primera carga
     buscarUsuarios();
+
 });
 
-async function cargarPerfiles() {
+async function cargarUsuarios(page = 1){
 
-    const response = await fetchAuth("/perfil?page=1");
-    if (!response) return;
+ const usuario = document.getElementById("usuario").value;
 
-    const data = await response.json();
+ const res = await fetchAuth(
+   `/usuario?page=${page}&usuario=${usuario}`
+ );
 
-    const filtro = document.getElementById("filtro-perfil");
-    const modal = document.getElementById("perfil");
+ const data = await res.json();
 
-    filtro.innerHTML = `<option value="">Todos</option>`;
-
-    data.forEach(p => {
-
-        filtro.innerHTML += `<option value="${p.id}">
-            ${p.strnombreperfil}
-        </option>`;
-
-        modal.innerHTML += `<option value="${p.id}">
-            ${p.strnombreperfil}
-        </option>`;
-    });
+ pintarTabla(data);
 }
 
-async function buscarUsuarios() {
 
-    const usuario = document.getElementById("filtro-usuario").value;
-    const perfil = document.getElementById("filtro-perfil").value;
-    const estado = document.getElementById("filtro-estado").value;
+let totalPaginas = 1;
 
-  let query = "/usuario?page=" + pagina; 
+async function buscarUsuarios(){
 
-    if (usuario) query += `&usuario=${encodeURIComponent(usuario)}`;
-    if (perfil) query += `&perfil=${perfil}`;
-    if (estado) query += `&estado=${estado}`;
+ const usuario = document.getElementById("filtro-usuario").value;
+ const perfil = document.getElementById("filtro-perfil").value;
+ const estado = document.getElementById("filtro-estado").value;
 
-    const response = await fetchAuth(query);
-    if (!response || !response.ok) return;
+ let query = `/usuario?page=${pagina}`;
 
-    const data = await response.json();
-    renderTabla(data);
+ if(usuario) query += `&usuario=${usuario}`;
+ if(perfil) query += `&perfil=${perfil}`;
+ if(estado) query += `&estado=${estado}`;
+
+ const res = await fetchAuth(query);
+ const result = await res.json();
+
+ renderTabla(result.data);
+
+ calcularPaginas(result.total);
 }
 
-function renderTabla(data) {
+function renderTabla(data){
 
-    const tabla = document.getElementById("tabla-usuarios");
-    tabla.innerHTML = "";
+ const tabla = document.getElementById("tabla-usuarios");
+ tabla.innerHTML = "";
 
-    data.forEach(u => {
+ data.forEach(u => {
 
-        tabla.innerHTML += `
-        <tr>
-            <td>${u.strnombreusuario}</td>
-            <td>${u.perfil}</td>
-            <td>${u.estado}</td>
-            <td>${u.strcorreo}</td>
-            <td>${u.strnumerocelular || ""}</td>
+  tabla.innerHTML += `
+  <tr>
+   <td>${u.strnombreusuario}</td>
+   <td>${u.idperfil}</td>
+   <td>${u.idestadousuario}</td>
+   <td>${u.strcorreo}</td>
+   <td>${u.strnumerocelular}</td>
 
-            <td>
-                <button onclick="editar(${u.id})">
-                Editar
-                </button>
-            </td>
+   <td><button onclick="editar(${u.id})">Editar</button></td>
+   <td><button onclick="eliminar(${u.id})">Eliminar</button></td>
+  </tr>
+  `;
+ });
 
-            <td>
-                <button onclick="eliminar(${u.id})">
-                Eliminar
-                </button>
-            </td>
-        </tr>
-        `;
-    });
+}
+function calcularPaginas(total){
 
-    document.getElementById("pagina-actual").innerText = pagina;
+ const limit = 10;
+
+ totalPaginas = Math.ceil(total / limit);
+
+ let html = "";
+
+ for(let i=1;i<=totalPaginas;i++){
+
+  html += `<button onclick="irPagina(${i})">${i}</button>`;
+
+ }
+
+ document.getElementById("paginacion").innerHTML = html;
 }
 
-function siguiente() {
-    pagina++;
-    buscarUsuarios();
+function irPagina(p){
+ pagina = p;
+ buscarUsuarios();
 }
 
-function anterior() {
-    if (pagina > 1) {
-        pagina--;
-        buscarUsuarios();
-    }
-}
+
 
 // 🔹 Eliminar
 async function eliminar(id) {

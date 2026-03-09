@@ -26,3 +26,16 @@ pub struct CrearUsuario {
     pub strcorreo: String,
     pub strnumerocelular: String,
 }
+#[derive(Deserialize)]
+pub struct UsuarioQuery {
+   pub page: Option<i64>,
+   pub usuario: Option<String>,
+   pub perfil: Option<i32>,
+   pub estado: Option<i32>,
+}
+
+#[derive(Serialize)]
+pub struct UsuarioResponse {
+   pub total: i64,
+   pub data: Vec<Usuario>,
+}

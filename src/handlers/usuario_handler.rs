@@ -1,44 +1,80 @@
 use actix_web::{get, post, put, delete, web, HttpResponse};
 use sqlx::PgPool;
-use std::collections::HashMap;
+
 use bcrypt::{hash, DEFAULT_COST};
-use crate::models::usuario::{Usuario, CrearUsuario};
+use crate::models::usuario::{Usuario, CrearUsuario,UsuarioQuery,UsuarioResponse};
 use crate::utils::email::enviar_credenciales;
-//
-// 📌 GET USUARIOS (Paginado)
-//
+
+
+
 #[get("/usuario")]
 pub async fn get_usuarios(
     pool: web::Data<PgPool>,
-    query: web::Query<HashMap<String, String>>,
+    query: web::Query<UsuarioQuery>,
 ) -> HttpResponse {
 
-    let page: i64 = query.get("page")
-        .unwrap_or(&"1".to_string())
-        .parse()
-        .unwrap_or(1);
+    let page = query.page.unwrap_or(1);
+    let limit = 10;
+    let offset = (page - 1) * limit;
 
-    let offset = (page - 1) * 5;
+    let usuario = query.usuario.clone().unwrap_or_default();
+    let perfil = query.perfil.unwrap_or(0);
+    let estado = query.estado.unwrap_or(0);
 
-    let usuarios = sqlx::query_as::<_, Usuario>(
+    // 🔹 TOTAL REGISTROS
+    let total: (i64,) = sqlx::query_as(
         r#"
-        SELECT id,
-               strnombreusuario,
-               strcorreo,
-               idperfil,
-               bitactivo
+        SELECT COUNT(*)
         FROM usuario
-        ORDER BY id
-        LIMIT 5 OFFSET $1
+        WHERE
+        ($1 = '' OR strnombreusuario ILIKE '%' || $1 || '%')
+        AND ($2 = 0 OR idperfil = $2)
+        AND ($3 = 0 OR idestadousuario = $3)
         "#
     )
+    .bind(&usuario)
+    .bind(perfil)
+    .bind(estado)
+    .fetch_one(pool.get_ref())
+    .await
+    .unwrap_or((0,));
+
+    // 🔹 DATA PAGINADA
+    let usuarios = sqlx::query_as::<_, Usuario>(
+        r#"
+        SELECT
+        id,
+        strnombreusuario,
+        idperfil,
+        idestadousuario,
+        strcorreo,
+        strnumerocelular
+        FROM usuario
+        WHERE
+        ($1 = '' OR strnombreusuario ILIKE '%' || $1 || '%')
+        AND ($2 = 0 OR idperfil = $2)
+        AND ($3 = 0 OR idestadousuario = $3)
+        ORDER BY strnombreusuario
+        LIMIT $4 OFFSET $5
+        "#
+    )
+    .bind(&usuario)
+    .bind(perfil)
+    .bind(estado)
+    .bind(limit)
     .bind(offset)
     .fetch_all(pool.get_ref())
     .await;
 
     match usuarios {
-        Ok(data) => HttpResponse::Ok().json(data),
-        Err(_) => HttpResponse::InternalServerError().body("Error al obtener usuarios"),
+       Ok(data) => HttpResponse::Ok().json(UsuarioResponse {
+    total: total.0,
+    data,
+}),
+        Err(e) => {
+            println!("ERROR USUARIOS: {:?}", e);
+            HttpResponse::InternalServerError().body("Error cargando usuarios")
+        }
     }
 }
 
