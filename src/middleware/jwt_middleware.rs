@@ -1,10 +1,11 @@
 use actix_web::{
     dev::{Service, ServiceRequest, ServiceResponse, Transform},
-    Error, HttpMessage
+    Error, HttpMessage, HttpResponse
 };
 use futures::future::{ok, Ready, LocalBoxFuture};
 use std::rc::Rc;
 use std::task::{Context, Poll};
+
 use crate::utils::jwt::{validate_jwt, Claims};
 
 pub struct JwtMiddleware;
@@ -44,12 +45,13 @@ where
         self.service.poll_ready(ctx)
     }
 
-    fn call(&self,  req: ServiceRequest) -> Self::Future {
+    fn call(&self, mut req: ServiceRequest) -> Self::Future {
+
         let service = Rc::clone(&self.service);
 
         Box::pin(async move {
 
-            // 1️⃣ Obtener header Authorization
+            // 1️⃣ Obtener Authorization header
             let auth_header = req.headers().get("Authorization");
 
             if auth_header.is_none() {
@@ -60,7 +62,7 @@ where
 
             // 2️⃣ Validar formato Bearer
             if !auth_str.starts_with("Bearer ") {
-                return Err(actix_web::error::ErrorUnauthorized("Formato inválido"));
+                return Err(actix_web::error::ErrorUnauthorized("Formato de token inválido"));
             }
 
             let token = &auth_str[7..];
@@ -69,15 +71,16 @@ where
             let claims = match validate_jwt(token) {
                 Ok(data) => data,
                 Err(_) => {
-                    return Err(actix_web::error::ErrorUnauthorized("Token inválido"));
+                    return Err(actix_web::error::ErrorUnauthorized("Token inválido o expirado"));
                 }
             };
 
             // 4️⃣ Insertar claims en request
             req.extensions_mut().insert::<Claims>(claims);
 
-            // 5️⃣ Continuar
+            // 5️⃣ Continuar request
             let res = service.call(req).await?;
+
             Ok(res)
         })
     }

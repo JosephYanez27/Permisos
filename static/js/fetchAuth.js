@@ -1,21 +1,30 @@
 
 
-function fetchAuth(endpoint, options = {}) {
+async function fetchAuth(url, options = {}) {
 
     const token = localStorage.getItem("token");
 
-    if (!token) {
+    if (!options.headers) {
+        options.headers = {};
+    }
+
+    options.headers["Authorization"] = `Bearer ${token}`;
+    options.headers["Content-Type"] = "application/json";
+
+    const response = await fetch(API_URL + url, options);
+
+    // 🔴 TOKEN EXPIRADO
+    if (response.status === 401) {
+
+        console.log("Token expirado");
+
+        localStorage.removeItem("token");
+
         window.location.href = "login.html";
+
         return null;
     }
 
-    return fetch(API_BASE + endpoint, {   // 🔥 AQUÍ SE CONCATENA
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token,
-            ...options.headers
-        }
-    });
+    return response;
 }
 window.fetchAuth = fetchAuth;

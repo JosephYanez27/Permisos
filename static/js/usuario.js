@@ -48,41 +48,87 @@ let totalPaginas = 1;
 
 async function buscarUsuarios(){
 
- const usuario = document.getElementById("filtro-usuario").value;
+ const usuario = document.getElementById("filtro-usuario").value.trim();
  const perfil = document.getElementById("filtro-perfil").value;
  const estado = document.getElementById("filtro-estado").value;
 
  let query = `/usuario?page=${pagina}`;
 
- if(usuario) query += `&usuario=${usuario}`;
+ if(usuario) query += `&usuario=${encodeURIComponent(usuario)}`;
  if(perfil) query += `&perfil=${perfil}`;
  if(estado) query += `&estado=${estado}`;
 
- const res = await fetchAuth(query);
- const result = await res.json();
+ try{
 
- renderTabla(result.data);
+  const res = await fetchAuth(query);
 
- calcularPaginas(result.total);
+  if(res.status === 401){
+   alert("Sesión expirada");
+   window.location.href = "/login.html";
+   return;
+  }
+
+  const result = await res.json();
+  
+
+  console.log("Respuesta API:", result);
+
+  if(!result || !result.data){
+   console.error("Respuesta inválida:", result);
+   renderTabla([]);
+   return;
+  }
+
+  renderTabla(result.data);
+
+  if(result.total !== undefined){
+   calcularPaginas(result.total);
+  }
+
+ }catch(error){
+  console.error("Error cargando usuarios:", error);
+ }
+
 }
 
 function renderTabla(data){
+     console.log("Datos que llegan a la tabla:", data);
 
  const tabla = document.getElementById("tabla-usuarios");
  tabla.innerHTML = "";
+
+ if(!Array.isArray(data)){
+  console.error("Data no es arreglo:", data);
+  return;
+ }
+
+ if(data.length === 0){
+  tabla.innerHTML = `
+   <tr>
+    <td colspan="7">No se encontraron usuarios</td>
+   </tr>
+  `;
+  return;
+ }
 
  data.forEach(u => {
 
   tabla.innerHTML += `
   <tr>
-   <td>${u.strnombreusuario}</td>
-   <td>${u.idperfil}</td>
-   <td>${u.idestadousuario}</td>
-   <td>${u.strcorreo}</td>
-   <td>${u.strnumerocelular}</td>
+   <td>${u.strnombreusuario ?? ""}</td>
+   <td>${u.idperfil ?? ""}</td>
+   <td>${u.idestadousuario ?? ""}</td>
+   <td>${u.strcorreo ?? ""}</td>
+   <td>${u.strnumerocelular ?? ""}</td>
 
-   <td><button onclick="editar(${u.id})">Editar</button></td>
-   <td><button onclick="eliminar(${u.id})">Eliminar</button></td>
+   <td>
+    <button onclick="editar(${u.id})">Editar</button>
+   </td>
+
+   <td>
+    <button onclick="eliminar(${u.id})">Eliminar</button>
+   </td>
+
   </tr>
   `;
  });
