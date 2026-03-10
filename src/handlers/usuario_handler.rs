@@ -73,10 +73,10 @@ pub async fn get_usuarios(
             total: total.0,
             data,
         }),
-        Err(e) => {
-            println!("ERROR USUARIOS: {:?}", e);
-            HttpResponse::InternalServerError().body("Error cargando usuarios")
-        }
+      Err(e) => {
+    eprintln!("ERROR SQLX USUARIOS: {:?}", e);
+    HttpResponse::InternalServerError().body("Error cargando usuarios")
+}
     }
 }
 
