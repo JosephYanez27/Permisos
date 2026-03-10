@@ -14,7 +14,7 @@ pub struct Usuario {
     pub perfil: String,
     pub estado: String,
     pub strcorreo: String,
-    pub strnumerocelular: String,
+    pub strnumerocelular: Option<String>,
 }
 
 #[derive(Deserialize,FromRow)]
