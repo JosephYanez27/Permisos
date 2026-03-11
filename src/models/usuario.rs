@@ -21,7 +21,7 @@ pub struct Usuario {
 pub struct CrearUsuario {
     pub strnombreusuario: String,
     pub idperfil: i32,
-    pub strpwd: String,
+    pub strpwd: Option<String>,
     pub idestadousuario: i32,
     pub strcorreo: String,
     pub strnumerocelular: String,

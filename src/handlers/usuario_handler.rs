@@ -189,7 +189,7 @@ pub async fn update_usuario(
 
     let id = path.into_inner();
 
-    let result = if !data.strpwd.trim().is_empty() {
+    let result = if let Some(password) = &data.strpwd {
 
         let hashed_password = match hash(&data.strpwd, DEFAULT_COST) {
             Ok(h) => h,
