@@ -57,7 +57,8 @@ pub async fn login(
     if estado.to_lowercase() != "activo" {
         return HttpResponse::Unauthorized().body("Usuario inactivo");
     }
-
+    println!("Usuario login: {}", data.usuario);
+println!("Password login: {}", data.password);
     // 🎟 5️⃣ Generar JWT
     let token = generate_jwt(id, idperfil);
 
