@@ -214,10 +214,10 @@ async fn main() -> std::io::Result<()> {
                     .service(get_menu)
                    
 
-                    .service(get_permisos)
+                    .service(get_permisos_por_perfil)
                     .service(get_permiso_by_id)
                     .service(create_permiso)
-                    .service(update_permiso)
+                    .service(guardar_permisos)
                     .service(delete_permiso)
 
                     .service(mis_permisos)
