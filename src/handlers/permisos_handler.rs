@@ -19,6 +19,7 @@ pub async fn get_permisos_por_perfil(
         SELECT 
             m.id as idmodulo,
             m.strnombremodulo as modulo,
+            COALESCE(p.idperfil, $1) as idperfil,
             p.id,
             COALESCE(p.bitagregar,false) as bitagregar,
             COALESCE(p.biteditar,false) as biteditar,
