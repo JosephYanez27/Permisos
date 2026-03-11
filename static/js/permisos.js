@@ -46,11 +46,11 @@ function renderTabla() {
         tabla.innerHTML += `
             <tr>
                 <td>${p.modulo}</td>
-                <td><input type="checkbox" ${p.bitagregar ? "checked" : ""} onchange="cambiar(${p.id}, 'bitagregar', this.checked)"></td>
-                <td><input type="checkbox" ${p.biteditar ? "checked" : ""} onchange="cambiar(${p.id}, 'biteditar', this.checked)"></td>
-                <td><input type="checkbox" ${p.biteliminar ? "checked" : ""} onchange="cambiar(${p.id}, 'biteliminar', this.checked)"></td>
-                <td><input type="checkbox" ${p.bitconsulta ? "checked" : ""} onchange="cambiar(${p.id}, 'bitconsulta', this.checked)"></td>
-                <td><input type="checkbox" ${p.bitdetalle ? "checked" : ""} onchange="cambiar(${p.id}, 'bitdetalle', this.checked)"></td>
+                <td><input type="checkbox" ${p.bitagregar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitagregar', this.checked)"></td>
+                <td><input type="checkbox" ${p.biteditar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'biteditar', this.checked)"></td>
+                <td><input type="checkbox" ${p.biteliminar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'biteliminar', this.checked)"></td>
+                <td><input type="checkbox" ${p.bitconsulta ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitconsulta', this.checked)"></td>
+                <td><input type="checkbox" ${p.bitdetalle ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitdetalle', this.checked)"></td>
             </tr>
         `;
     });
