@@ -57,9 +57,13 @@ function renderTabla() {
 }
 
 // 🔹 Cambiar valor en memoria
-function cambiar(id, campo, valor) {
-    const permiso = permisosActuales.find(p => p.id === id);
-    permiso[campo] = valor;
+function cambiar(idmodulo, campo, valor) {
+
+    const permiso = permisosActuales.find(p => p.idmodulo === idmodulo);
+
+    if (permiso) {
+        permiso[campo] = valor;
+    }
 }
 
 // 🔹 Guardar permisos
@@ -70,9 +74,7 @@ async function guardarPermisos() {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-         permisosActuales
-        })
+        body: JSON.stringify(permisosActuales)
     });
 
     if (!response) return;
