@@ -70,6 +70,10 @@ pub async fn get_permiso_by_id(
         Ok(Some(data)) => HttpResponse::Ok().json(data),
         Ok(None) => HttpResponse::NotFound().body("Permiso no encontrado"),
         Err(_) => HttpResponse::InternalServerError().body("Error al obtener permiso"),
+        Err(e) => {
+        println!("ERROR SQL: {:?}", e);
+        HttpResponse::InternalServerError().body("Error obteniendo permisos")
+    }
     }
 }
 
