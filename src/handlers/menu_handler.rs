@@ -21,24 +21,21 @@ pub async fn mis_permisos(
     // 🔥 AQUÍ ESTÁ EL CAMBIO (sin !)
     let permisos = sqlx::query_as::<_, PermisoModulo>(
         r#"
-        SELECT 
-            m.strnombremodulo as modulo,
-            p.bitagregar,
-            p.biteditar,
-            p.bitconsulta,
-            p.biteliminar,
-            p.bitdetalle
-        FROM permisosperfil p
-        JOIN modulo m ON m.id = p.idmodulo
-        WHERE p.idperfil = $1
-        AND (
-            p.bitagregar = true OR
-            p.biteditar = true OR
-            p.bitconsulta = true OR
-            p.biteliminar = true OR
-            p.bitdetalle = true
-        )
-        ORDER BY m.strnombremodulo
+       SELECT DISTINCT 
+    m.id,
+    m.strnombremodulo
+FROM modulo m
+LEFT JOIN modulo h ON h.idpadre = m.id
+LEFT JOIN permisosperfil p1 
+    ON p1.idmodulo = m.id AND p1.idperfil = $1
+LEFT JOIN permisosperfil p2 
+    ON p2.idmodulo = h.id AND p2.idperfil = $1
+WHERE
+    (
+        p1.bitconsulta = true
+        OR p2.bitconsulta = true
+    )
+ORDER BY m.id
         "#
     )
     .bind(id_perfil)

@@ -81,3 +81,33 @@ async function guardarPermisos() {
 
     alert("Permisos guardados correctamente");
 }
+permisosActuales.forEach(p => {
+
+    if(
+        p.bitagregar ||
+        p.biteditar ||
+        p.bitconsulta ||
+        p.biteliminar ||
+        p.bitdetalle
+    ){
+        // activar permiso consulta del padre
+        let padre = permisosActuales.find(x => x.idmodulo === p.idpadre);
+
+        if(padre){
+            padre.bitconsulta = true;
+        }
+    }
+
+});
+
+if(!permisos.bitagregar){
+   document.getElementById("btn-agregar").style.display = "none";
+}
+
+if(!permisos.biteditar){
+   document.querySelectorAll(".btn-editar").forEach(b => b.style.display="none");
+}
+
+if(!permisos.biteliminar){
+   document.querySelectorAll(".btn-eliminar").forEach(b => b.style.display="none");
+}
