@@ -206,6 +206,8 @@ function cerrarModal() {
 // 🔹 Guardar usuario
 async function guardarUsuario() {
 
+    const password = document.getElementById("password").value;
+
     const usuarioData = {
 
         strnombreusuario: document.getElementById("usuario").value,
@@ -219,17 +221,22 @@ async function guardarUsuario() {
         strnumerocelular: document.getElementById("celular").value,
 
         idestadousuario: parseInt(
- document.getElementById("estado").value,
-),
-     strpwd: document.getElementById("password").value  
-
+            document.getElementById("estado").value
+        )
     };
+
+    // 🔹 Solo enviar contraseña cuando es creación
+    if (!idUsuarioEdicion) {
+        usuarioData.strpwd = password;
+    }
 
     const metodo = idUsuarioEdicion ? "PUT" : "POST";
 
     const endpoint = idUsuarioEdicion
         ? `/usuario/${idUsuarioEdicion}`
         : "/usuario";
+
+    console.log("Datos enviados:", usuarioData);
 
     const response = await fetchAuth(endpoint, {
         method: metodo,
@@ -260,9 +267,15 @@ async function editar(id) {
     idUsuarioEdicion = id;
 
     const response = await fetchAuth(`/usuario/${id}`);
-    if (!response || !response.ok) return;
+
+    if (!response || !response.ok) {
+        console.error("Error cargando usuario");
+        return;
+    }
 
     const u = await response.json();
+
+    console.log("Usuario recibido:", u);
 
     document.getElementById("usuario").value =
         u.strnombreusuario;
@@ -277,7 +290,9 @@ async function editar(id) {
         u.idperfil;
 
     document.getElementById("estado").value =
-        u.idestado;
+        u.idestadousuario;
+
+    document.getElementById("password").value = ""; // limpiar password
 
     document.getElementById("modalUsuario").style.display = "block";
 }
