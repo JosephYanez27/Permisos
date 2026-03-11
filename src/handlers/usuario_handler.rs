@@ -2,7 +2,7 @@ use actix_web::{get, post, put, delete, web, HttpResponse};
 use sqlx::PgPool;
 
 use bcrypt::{hash, DEFAULT_COST};
-use crate::models::usuario::{Usuario, CrearUsuario,UsuarioQuery,UsuarioResponse};
+use crate::models::usuario::{Usuario, CrearUsuario,UsuarioQuery,UsuarioResponse,UsuarioDetalle};
 use crate::utils::email::enviar_credenciales;
 
 

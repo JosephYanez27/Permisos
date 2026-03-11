@@ -7,7 +7,7 @@ pub struct LoginRequest {
     pub password: String,
     pub recaptcha_token: String,
 }
-#[derive(Serialize)]
+#[derive(Serialize,FromRow)]
 pub struct Usuario {
     pub id: i32,
     pub strnombreusuario: String,
