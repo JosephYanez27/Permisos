@@ -6,36 +6,39 @@ use crate::models::permisos::{PermisoPerfil, CrearPermisoPerfil};
 //
 // 📌 GET PERMISOS (Paginado 5 registros)
 //
-#[get("/permisosperfil")]
-pub async fn get_permisos(
+#[get("/permisosperfil/{idperfil}")]
+pub async fn get_permisos_por_perfil(
     pool: web::Data<PgPool>,
-    query: web::Query<HashMap<String, String>>,
+    path: web::Path<i32>,
 ) -> HttpResponse {
 
-    let page: i64 = query.get("page")
-        .unwrap_or(&"1".to_string())
-        .parse()
-        .unwrap_or(1);
-
-    let offset = (page - 1) * 5;
+    let idperfil = path.into_inner();
 
     let permisos = sqlx::query_as::<_, PermisoPerfil>(
         r#"
-        SELECT id, idperfil, idmodulo,
-               bitagregar, biteditar, bitconsulta,
-               biteliminar, bitdetalle
-        FROM permisosperfil
-        ORDER BY id
-        LIMIT 5 OFFSET $1
+        SELECT 
+            m.id as idmodulo,
+            m.strnombremodulo as modulo,
+            p.id,
+            COALESCE(p.bitagregar,false) as bitagregar,
+            COALESCE(p.biteditar,false) as biteditar,
+            COALESCE(p.bitconsulta,false) as bitconsulta,
+            COALESCE(p.biteliminar,false) as biteliminar,
+            COALESCE(p.bitdetalle,false) as bitdetalle
+        FROM modulo m
+        LEFT JOIN permisosperfil p 
+            ON p.idmodulo = m.id 
+            AND p.idperfil = $1
+        ORDER BY m.id
         "#
     )
-    .bind(offset)
+    .bind(idperfil)
     .fetch_all(pool.get_ref())
     .await;
 
     match permisos {
         Ok(data) => HttpResponse::Ok().json(data),
-        Err(_) => HttpResponse::InternalServerError().body("Error al obtener permisos"),
+        Err(_) => HttpResponse::InternalServerError().body("Error obteniendo permisos"),
     }
 }
 
@@ -108,46 +111,43 @@ pub async fn create_permiso(
 //
 // 📌 UPDATE PERMISO
 //
-#[put("/permisosperfil/{id}")]
-pub async fn update_permiso(
+#[put("/permisosperfil")]
+pub async fn guardar_permisos(
     pool: web::Data<PgPool>,
-    path: web::Path<i32>,
-    data: web::Json<CrearPermisoPerfil>,
+    data: web::Json<Vec<PermisoPerfil>>,
 ) -> HttpResponse {
 
-    let id = path.into_inner();
+    for p in data.iter() {
 
-    let result = sqlx::query(
-        r#"
-        UPDATE permisosperfil
-        SET idperfil = $1,
-            idmodulo = $2,
-            bitagregar = $3,
-            biteditar = $4,
-            bitconsulta = $5,
-            biteliminar = $6,
-            bitdetalle = $7
-        WHERE id = $8
-        "#
-    )
-    .bind(data.idperfil)
-    .bind(data.idmodulo)
-    .bind(data.bitagregar)
-    .bind(data.biteditar)
-    .bind(data.bitconsulta)
-    .bind(data.biteliminar)
-    .bind(data.bitdetalle)
-    .bind(id)
-    .execute(pool.get_ref())
-    .await;
-
-    match result {
-        Ok(r) if r.rows_affected() > 0 => {
-            HttpResponse::Ok().body("Permiso actualizado")
-        }
-        Ok(_) => HttpResponse::NotFound().body("Permiso no encontrado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al actualizar permiso"),
+        let _ = sqlx::query(
+            r#"
+            INSERT INTO permisosperfil(
+                idperfil,idmodulo,
+                bitagregar,biteditar,
+                bitconsulta,biteliminar,bitdetalle
+            )
+            VALUES($1,$2,$3,$4,$5,$6,$7)
+            ON CONFLICT (idperfil,idmodulo)
+            DO UPDATE SET
+                bitagregar = EXCLUDED.bitagregar,
+                biteditar = EXCLUDED.biteditar,
+                bitconsulta = EXCLUDED.bitconsulta,
+                biteliminar = EXCLUDED.biteliminar,
+                bitdetalle = EXCLUDED.bitdetalle
+            "#
+        )
+        .bind(p.idperfil)
+        .bind(p.idmodulo)
+        .bind(p.bitagregar)
+        .bind(p.biteditar)
+        .bind(p.bitconsulta)
+        .bind(p.biteliminar)
+        .bind(p.bitdetalle)
+        .execute(pool.get_ref())
+        .await;
     }
+
+    HttpResponse::Ok().body("Permisos guardados")
 }
 
 //

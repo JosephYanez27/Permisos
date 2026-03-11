@@ -27,7 +27,7 @@ async function buscarPermisos() {
 
     perfilSeleccionado = document.getElementById("perfil-select").value;
 
-    const response = await fetchAuth(`/permisos/${perfilSeleccionado}`);
+    const response = await fetchAuth(`/permisosperfil/${perfilSeleccionado}`);
     if (!response) return;
 
     permisosActuales = await response.json();
@@ -65,12 +65,18 @@ function cambiar(id, campo, valor) {
 // 🔹 Guardar permisos
 async function guardarPermisos() {
 
-    const response = await fetchAuth("/permisos", {
+    const response = await fetchAuth("/permisosperfil", {
         method: "PUT",
-        body: JSON.stringify(permisosActuales)
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            idperfil: perfilSeleccionado,
+            permisos: permisosActuales
+        })
     });
 
     if (!response) return;
 
-    alert("Permisos actualizados correctamente");
+    alert("Permisos guardados correctamente");
 }
