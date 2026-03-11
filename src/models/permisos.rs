@@ -6,6 +6,7 @@ pub struct PermisoPerfil {
     pub id: Option<i32>,
     pub idperfil: i32,
     pub idmodulo: i32,
+    pub modulo: String,
     pub bitagregar: bool,
     pub biteditar: bool,
     pub bitconsulta: bool,
