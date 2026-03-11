@@ -91,13 +91,15 @@ pub async fn get_usuario_by_id(
 
     let id = path.into_inner();
 
-    let usuario = sqlx::query_as::<_, Usuario>(
+    let usuario = sqlx::query_as::<_, UsuarioDetalle>(
         r#"
-        SELECT id,
-               strnombreusuario,
-               strcorreo,
-               idperfil,
-               bitactivo
+        SELECT 
+            id,
+            strnombreusuario,
+            strcorreo,
+            strnumerocelular,
+            idperfil,
+            idestadousuario
         FROM usuario
         WHERE id = $1
         "#
@@ -109,7 +111,10 @@ pub async fn get_usuario_by_id(
     match usuario {
         Ok(Some(data)) => HttpResponse::Ok().json(data),
         Ok(None) => HttpResponse::NotFound().body("Usuario no encontrado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al obtener usuario"),
+        Err(e) => {
+            eprintln!("ERROR SQLX DETALLE USUARIO: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al obtener usuario")
+        }
     }
 }
 

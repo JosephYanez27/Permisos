@@ -7,7 +7,7 @@ pub struct LoginRequest {
     pub password: String,
     pub recaptcha_token: String,
 }
-#[derive(Serialize,FromRow)]
+#[derive(Serialize)]
 pub struct Usuario {
     pub id: i32,
     pub strnombreusuario: String,
@@ -38,4 +38,13 @@ pub struct UsuarioQuery {
 pub struct UsuarioResponse {
    pub total: i64,
    pub data: Vec<Usuario>,
+}
+#[derive(Serialize, FromRow)]
+pub struct UsuarioDetalle {
+    pub id: i32,
+    pub strnombreusuario: String,
+    pub strcorreo: String,
+    pub strnumerocelular: Option<String>,
+    pub idperfil: i32,
+    pub idestadousuario: i32,
 }
