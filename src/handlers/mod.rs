@@ -4,4 +4,3 @@ pub mod usuario_handler;
 pub mod modulo_handler;
 pub mod permisos_handler;
 pub mod principal_handler;
-pub mod menu_handler;

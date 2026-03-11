@@ -22,7 +22,6 @@ use handlers::usuario_handler::*;
 use handlers::modulo_handler::*;
 use handlers::permisos_handler::*;
 use handlers::principal_handler::*;
-use handlers::menu_handler::*;
 
 
 /// ===============================
