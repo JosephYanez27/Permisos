@@ -46,12 +46,12 @@ pub async fn get_usuarios(
             u.id,
             u.strnombreusuario,
             p.strnombreperfil AS perfil,
-            e.strnombreestado AS estado,
+            e.strdescripcion AS estado,
             u.strcorreo,
             u.strnumerocelular
         FROM usuario u
-        JOIN perfil p ON u.idperfil = p.idperfil
-        JOIN estadousuario e ON u.idestadousuario = e.idestadousuario
+        JOIN perfil p ON u.idperfil = p.id
+        JOIN estadousuario e ON u.idestadousuario = e.id
         WHERE
         ($1 = '' OR u.strnombreusuario ILIKE '%' || $1 || '%')
         AND ($2 = 0 OR u.idperfil = $2)
