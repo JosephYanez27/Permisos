@@ -219,8 +219,10 @@ async function guardarUsuario() {
         strnumerocelular: document.getElementById("celular").value,
 
         idestadousuario: parseInt(
- document.getElementById("estado").value
-)
+ document.getElementById("estado").value,
+),
+     strpwd: document.getElementById("password").value  
+
     };
 
     const metodo = idUsuarioEdicion ? "PUT" : "POST";
