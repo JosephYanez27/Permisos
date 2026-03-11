@@ -128,12 +128,15 @@ pub async fn create_usuario(
 ) -> HttpResponse {
 
     if data.strnombreusuario.trim().is_empty()
-        || data.strpwd.trim().is_empty()
+        || data.strpwd.as_ref().map_or(true, |p| p.trim().is_empty())
     {
         return HttpResponse::BadRequest().body("Campos obligatorios vacíos");
     }
 
-    let plain_password = data.strpwd.clone();
+    let plain_password = match &data.strpwd {
+    Some(p) => p.clone(),
+    None => return HttpResponse::BadRequest().body("Password requerido"),
+};
 
     let hashed_password = match hash(&plain_password, DEFAULT_COST) {
         Ok(h) => h,
@@ -191,7 +194,7 @@ pub async fn update_usuario(
 
     let result = if let Some(password) = &data.strpwd {
 
-        let hashed_password = match hash(&data.strpwd, DEFAULT_COST) {
+        let hashed_password = match hash(password, DEFAULT_COST) {
             Ok(h) => h,
             Err(_) => return HttpResponse::InternalServerError().body("Error hash password"),
         };
@@ -242,7 +245,7 @@ pub async fn update_usuario(
     };
 
     match result {
-        Ok(r) if r.rows_affected() > 0u64 =>
+        Ok(r) if r.rows_affected() > 0 =>
             HttpResponse::Ok().body("Usuario actualizado"),
         _ =>
             HttpResponse::InternalServerError().body("Error actualizando usuario"),
