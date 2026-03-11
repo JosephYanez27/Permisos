@@ -153,3 +153,21 @@ pub async fn get_perfil_by_id(
         Err(_) => HttpResponse::InternalServerError().body("Error al obtener perfil"),
     }
 }
+
+#[get("/perfil")]
+pub async fn get_perfil(pool: web::Data<PgPool>) -> HttpResponse {
+
+    let perfiles = sqlx::query_as::<_, Perfil>(
+        "SELECT id, strnombreperfil FROM perfil ORDER BY strnombreperfil"
+    )
+    .fetch_all(pool.get_ref())
+    .await;
+
+    match perfiles {
+        Ok(data) => HttpResponse::Ok().json(data),
+        Err(e) => {
+            eprintln!("Error perfiles: {:?}", e);
+            HttpResponse::InternalServerError().finish()
+        }
+    }
+}

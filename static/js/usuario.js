@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         pagina = 1;
         buscarUsuarios();
     });
-
+    await cargarPerfiles();
     // 🔹 Primera carga
     buscarUsuarios();
 
@@ -284,6 +284,47 @@ fetch("/menu.html")
 .then(html => {
     document.getElementById("menu").innerHTML = html;
 });
+
+async function cargarPerfiles() {
+
+    try {
+
+        const res = await fetchAuth("/perfil");
+
+        if (!res.ok) {
+            console.error("Error cargando perfiles");
+            return;
+        }
+
+        const perfiles = await res.json();
+
+        const selectPerfil = document.getElementById("perfil");
+        const filtroPerfil = document.getElementById("filtro-perfil");
+
+        selectPerfil.innerHTML = "";
+        filtroPerfil.innerHTML = '<option value="">Todos</option>';
+
+        perfiles.forEach(p => {
+
+            selectPerfil.innerHTML += `
+                <option value="${p.id}">
+                    ${p.strnombreperfil}
+                </option>
+            `;
+
+            filtroPerfil.innerHTML += `
+                <option value="${p.id}">
+                    ${p.strnombreperfil}
+                </option>
+            `;
+        });
+
+    } catch (error) {
+
+        console.error("Error perfiles:", error);
+
+    }
+}
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
 window.editar = editar;
