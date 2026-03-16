@@ -198,7 +198,7 @@ pub async fn mis_permisos(
     let permisos = sqlx::query_as::<_, PermisoModulo>(
         r#"
         SELECT 
-            m.strnombremodulo,
+            m.modulo,
             p.bitconsulta,
             p.bitagregar,
             p.biteditar,
