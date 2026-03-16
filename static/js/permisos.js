@@ -100,14 +100,34 @@ permisosActuales.forEach(p => {
 
 });
 
-if(!permisos.bitagregar){
-   document.getElementById("btn-agregar").style.display = "none";
-}
+async function aplicarPermisos(modulo){
 
-if(!permisos.biteditar){
-   document.querySelectorAll(".btn-editar").forEach(b => b.style.display="none");
-}
+ const res = await fetchAuth("/mis-permisos");
 
-if(!permisos.biteliminar){
-   document.querySelectorAll(".btn-eliminar").forEach(b => b.style.display="none");
+ if(!res || !res.ok){
+   console.error("Error cargando permisos");
+   return;
+ }
+
+ const data = await res.json();
+
+ const permisos = data.find(p => p.modulo === modulo);
+
+ if(!permisos) return;
+
+ if(!permisos.bitagregar){
+   const btn = document.getElementById("btn-agregar");
+   if(btn) btn.style.display = "none";
+ }
+
+ if(!permisos.biteditar){
+   document.querySelectorAll(".btn-editar")
+   .forEach(b => b.style.display="none");
+ }
+
+ if(!permisos.biteliminar){
+   document.querySelectorAll(".btn-eliminar")
+   .forEach(b => b.style.display="none");
+ }
+
 }

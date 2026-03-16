@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await cargarPerfiles();
     // 🔹 Primera carga
     buscarUsuarios();
+    aplicarPermisos("usuario");
 
 });
 
@@ -341,6 +342,37 @@ async function cargarPerfiles() {
         console.error("Error perfiles:", error);
 
     }
+}
+async function aplicarPermisos(modulo){
+
+ const res = await fetchAuth("/mis-permisos");
+
+ if(!res || !res.ok){
+   console.error("Error cargando permisos");
+   return;
+ }
+
+ const data = await res.json();
+
+ const permisos = data.find(p => p.modulo === modulo);
+
+ if(!permisos) return;
+
+ if(!permisos.bitagregar){
+   const btn = document.getElementById("btn-agregar");
+   if(btn) btn.style.display = "none";
+ }
+
+ if(!permisos.biteditar){
+   document.querySelectorAll(".btn-editar")
+   .forEach(b => b.style.display="none");
+ }
+
+ if(!permisos.biteliminar){
+   document.querySelectorAll(".btn-eliminar")
+   .forEach(b => b.style.display="none");
+ }
+
 }
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
