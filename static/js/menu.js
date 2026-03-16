@@ -52,7 +52,7 @@ async function aplicarPermisosAuto(){
 
 document.addEventListener("DOMContentLoaded", async () => {
 
- await cargarPermisos();
- aplicarPermisosAuto();
+ await  aplicarPermisosAuto();
+
 
 });
