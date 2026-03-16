@@ -381,6 +381,6 @@ window.editar = editar;
 window.eliminar = eliminar;
 window.limpiarFiltros = limpiarFiltros;
 window.guardarUsuario = guardarUsuario;
-
+window.aplicarPermisos=aplicarPermisos;
 window.abrirModal = abrirModal;
 window.cerrarModal = cerrarModal;
