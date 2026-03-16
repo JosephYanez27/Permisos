@@ -195,22 +195,22 @@ pub async fn mis_permisos(
         None => return HttpResponse::Unauthorized().body("No autorizado"),
     };
 
-    let permisos = sqlx::query_as::<_, PermisoModulo>(
-        r#"
-        SELECT 
-            m.modulo,
-            p.bitconsulta,
-            p.bitagregar,
-            p.biteditar,
-            p.biteliminar
-        FROM permisosperfil p
-        JOIN modulo m ON m.id = p.idmodulo
-        WHERE p.idperfil = $1
-        "#
-    )
-    .bind(claims.id_perfil)
-    .fetch_all(pool.get_ref())
-    .await;
+let permisos = sqlx::query_as::<_, PermisoModulo>(
+    r#"
+    SELECT 
+        m.strnombremodulo AS modulo,
+        p.bitconsulta,
+        p.bitagregar,
+        p.biteditar,
+        p.biteliminar
+    FROM permisosperfil p
+    JOIN modulo m ON m.id = p.idmodulo
+    WHERE p.idperfil = $1
+    "#
+)
+.bind(claims.id_perfil)
+.fetch_all(pool.get_ref())
+.await;
 
     match permisos {
         Ok(data) => HttpResponse::Ok().json(data),
