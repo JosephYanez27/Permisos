@@ -347,8 +347,8 @@ async function aplicarPermisos(modulo){
 
  const res = await fetchAuth("/mis-permisos");
 
- if(!res || !res.ok){
-   console.error("Error cargando permisos");
+ if(!res){
+   console.error("No se pudo obtener permisos");
    return;
  }
 
@@ -374,6 +374,7 @@ async function aplicarPermisos(modulo){
  }
 
 }
+
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
 window.editar = editar;
