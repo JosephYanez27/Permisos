@@ -34,3 +34,4 @@ pub struct PermisoModulo {
     pub biteliminar: bool,
     pub bitdetalle: bool,
 }
+

@@ -19,25 +19,48 @@ let claims = match req.extensions().get::<Claims>().cloned() {
 let id_perfil = claims.id_perfil;
 
     // 🔹 Obtener módulos con permisos
-    let result = sqlx::query_as::<_, Modulo>(
-        r#"
-        SELECT m.id, m.strnombremodulo, m.idmodulopadre
-        FROM permisosperfil p
-        JOIN modulo m ON m.id = p.idmodulo
-        WHERE p.idperfil = $1
-        AND (
-            p.bitconsulta = true OR
-            p.bitdetalle = true OR
-            p.bitagregar = true OR
-            p.biteditar = true OR
-            p.biteliminar = true
+let result = sqlx::query_as::<_, Modulo>(
+    r#"
+    SELECT DISTINCT
+        m.id,
+        m.strnombremodulo,
+        m.idmodulopadre
+    FROM modulo m
+    WHERE
+        m.id IN (
+            SELECT p.idmodulo
+            FROM permisosperfil p
+            WHERE p.idperfil = $1
+            AND (
+                p.bitconsulta = true OR
+                p.bitdetalle = true OR
+                p.bitagregar = true OR
+                p.biteditar = true OR
+                p.biteliminar = true
+            )
         )
-        ORDER BY m.idmodulopadre NULLS FIRST, m.id
-        "#
-    )
-    .bind(id_perfil)
-    .fetch_all(pool.get_ref())
-    .await;
+
+        OR m.id IN (
+            SELECT padre.id
+            FROM modulo hijo
+            JOIN modulo padre ON padre.id = hijo.idmodulopadre
+            JOIN permisosperfil p ON p.idmodulo = hijo.id
+            WHERE p.idperfil = $1
+            AND (
+                p.bitconsulta = true OR
+                p.bitdetalle = true OR
+                p.bitagregar = true OR
+                p.biteditar = true OR
+                p.biteliminar = true
+            )
+        )
+
+    ORDER BY m.idmodulopadre NULLS FIRST, m.id
+    "#
+)
+.bind(id_perfil)
+.fetch_all(pool.get_ref())
+.await;
 
     let modulos: Vec<Modulo> = match result {
         Ok(m) => m,
