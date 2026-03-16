@@ -122,13 +122,13 @@ function renderTabla(data){
    <td>${u.strcorreo ?? ""}</td>
    <td>${u.strnumerocelular ?? ""}</td>
 
-   <td>
-    <button onclick="editar(${u.id})">Editar</button>
-   </td>
+<td>
+   <button class="btn-editar" onclick="editar(${u.id})">Editar</button>
+</td>
 
-   <td>
-    <button onclick="eliminar(${u.id})">Eliminar</button>
-   </td>
+<td>
+   <button class="btn-eliminar" onclick="eliminar(${u.id})">Eliminar</button>
+</td>
 
   </tr>
   `;
@@ -381,5 +381,6 @@ window.editar = editar;
 window.eliminar = eliminar;
 window.limpiarFiltros = limpiarFiltros;
 window.guardarUsuario = guardarUsuario;
+
 window.abrirModal = abrirModal;
 window.cerrarModal = cerrarModal;
