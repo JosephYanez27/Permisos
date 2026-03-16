@@ -38,3 +38,21 @@ async function cargarMenu(){
  });
 
 }
+async function aplicarPermisosAuto(){
+
+ const res = await fetchAuth("/mis-permisos");
+
+ if(!res) return;
+
+ const data = await res.json();
+
+ localStorage.setItem("permisos", JSON.stringify(data));
+
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+ await CargarPermisos();
+ aplicarPermisosAuto();
+
+});

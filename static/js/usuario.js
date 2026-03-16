@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await cargarPerfiles();
     // 🔹 Primera carga
     buscarUsuarios();
-    aplicarPermisos("usuario");
+   
 
 });
 
@@ -123,11 +123,15 @@ function renderTabla(data){
    <td>${u.strnumerocelular ?? ""}</td>
 
 <td>
-   <button class="btn-editar" onclick="editar(${u.id})">Editar</button>
+   <button class="btn-editar" data-permiso="editar" onclick="editar(${u.id})">
+Editar
+</button>
 </td>
 
 <td>
-   <button class="btn-eliminar" onclick="eliminar(${u.id})">Eliminar</button>
+   <button class="btn-eliminar" data-permiso="eliminar" onclick="eliminar(${u.id})">
+Eliminar
+</button>
 </td>
 
   </tr>
@@ -343,37 +347,7 @@ async function cargarPerfiles() {
 
     }
 }
-async function aplicarPermisos(modulo){
 
- const res = await fetchAuth("/mis-permisos");
-
- if(!res){
-   console.error("No se pudo obtener permisos");
-   return;
- }
-
- const data = await res.json();
-
- const permisos = data.find(p => p.modulo === modulo);
-
- if(!permisos) return;
-
- if(!permisos.bitagregar){
-   const btn = document.getElementById("btn-agregar");
-   if(btn) btn.style.display = "none";
- }
-
- if(!permisos.biteditar){
-   document.querySelectorAll(".btn-editar")
-   .forEach(b => b.style.display="none");
- }
-
- if(!permisos.biteliminar){
-   document.querySelectorAll(".btn-eliminar")
-   .forEach(b => b.style.display="none");
- }
-
-}
 
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
@@ -381,6 +355,5 @@ window.editar = editar;
 window.eliminar = eliminar;
 window.limpiarFiltros = limpiarFiltros;
 window.guardarUsuario = guardarUsuario;
-window.aplicarPermisos=aplicarPermisos;
 window.abrirModal = abrirModal;
 window.cerrarModal = cerrarModal;

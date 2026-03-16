@@ -99,4 +99,28 @@ permisosActuales.forEach(p => {
     }
 
 });
+function aplicarPermisosAuto(){
 
+ const permisos = JSON.parse(localStorage.getItem("permisos"));
+
+ if(!permisos) return;
+
+ const modulo = document.body.dataset.modulo;
+
+ const permisoModulo = permisos.find(p => p.modulo === modulo);
+
+ if(!permisoModulo) return;
+
+ document.querySelectorAll("[data-permiso]").forEach(el => {
+
+  const tipo = el.dataset.permiso;
+
+  if(!permisoModulo["bit"+tipo]){
+   el.style.display = "none";
+  }
+
+ });
+
+}
+
+window.aplicarPermisosAuto = aplicarPermisosAuto;

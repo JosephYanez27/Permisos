@@ -4,7 +4,7 @@
     <title>Usuario</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-modulo="usuario">
 <div id="menu"></div>
 <div class="breadcrumb">
     <a href="menu.html">Menú</a> > Seguridad > <a href="usuario.html">Usuario</a>
@@ -41,7 +41,9 @@
 </div>
 
 <div class="btn-agregar">
- <button id="btn-agregar" onclick="abrirModal()">Agregar</button>
+ <button data-permiso="agregar" onclick="abrirModal()">
+Agregar
+</button>
 
 </div>
 
@@ -102,6 +104,15 @@
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
 <script src="js/usuario.js"></script>
+<script src="js/permisos.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+ aplicarPermisosAuto();
+
+});
+</script>
 
 </body>
 </html>
