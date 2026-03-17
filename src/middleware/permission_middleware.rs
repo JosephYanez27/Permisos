@@ -116,10 +116,9 @@ where
                     p.get::<bool, _>("biteliminar"),
 
                 actix_web::http::Method::GET =>
-    p.get::<bool, _>("bitconsulta")
-    || p.get::<bool, _>("bitdetalle")
-    || p.get::<bool, _>("biteditar")
-    || p.get::<bool, _>("bitagregar"),
+                    p.get::<bool, _>("bitconsulta")
+                    || p.get::<bool, _>("bitdetalle"),
+
                 _ => false,
             };
 
