@@ -28,10 +28,9 @@ pub struct CrearPermisoPerfil {
 #[derive(Serialize, FromRow)]
 pub struct PermisoModulo {
     pub modulo: String,
+    pub bitconsulta: bool,
     pub bitagregar: bool,
     pub biteditar: bool,
-    pub bitconsulta: bool,
     pub biteliminar: bool,
-    pub bitdetalle: bool,
 }
 
