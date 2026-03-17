@@ -199,10 +199,10 @@ let permisos = sqlx::query_as::<_, PermisoModulo>(
     r#"
     SELECT 
         m.strnombremodulo AS modulo,
-        p.bitconsulta,
-        p.bitagregar,
-        p.biteditar,
-        p.biteliminar
+        COALESCE(p.bitconsulta, false) AS bitconsulta,
+        COALESCE(p.bitagregar, false) AS bitagregar,
+        COALESCE(p.biteditar, false) AS biteditar,
+        COALESCE(p.biteliminar, false) AS biteliminar
     FROM permisosperfil p
     JOIN modulo m ON m.id = p.idmodulo
     WHERE p.idperfil = $1
