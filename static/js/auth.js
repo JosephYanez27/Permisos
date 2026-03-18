@@ -55,11 +55,28 @@ async function login() {
             return;
         }
 
-        // 🔹 Guardar token
-        localStorage.setItem("token", data.token);
+   // 🔹 Guardar token
+localStorage.setItem("token", data.token);
 
-        // 🔹 Redirigir
-        window.location.href = "menu.html";
+// 🔥 OBTENER PERMISOS DESPUÉS DEL LOGIN
+const resPermisos = await fetch("/mis-permisos", {
+    headers: {
+        "Authorization": "Bearer " + data.token
+    }
+});
+
+if (!resPermisos.ok) {
+    alert("Error obteniendo permisos");
+    return;
+}
+
+const permisos = await resPermisos.json();
+
+// 🔥 GUARDAR PERMISOS
+localStorage.setItem("permisos", JSON.stringify(permisos));
+
+// 🔹 Redirigir
+window.location.href = "menu.html";
 
     } catch (error) {
         console.error("Error:", error);

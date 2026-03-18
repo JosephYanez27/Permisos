@@ -85,33 +85,49 @@ pub async fn get_permiso_by_id(
 #[post("/permisosperfil")]
 pub async fn create_permiso(
     pool: web::Data<PgPool>,
-    data: web::Json<CrearPermisoPerfil>,
+    data: web::Json<Vec<CrearPermisoPerfil>>,
 ) -> HttpResponse {
 
-    let result = sqlx::query(
-        r#"
-        INSERT INTO permisosperfil (
-            idperfil, idmodulo,
-            bitagregar, biteditar, bitconsulta,
-            biteliminar, bitdetalle
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        "#
-    )
-    .bind(data.idperfil)
-    .bind(data.idmodulo)
-    .bind(data.bitagregar)
-    .bind(data.biteditar)
-    .bind(data.bitconsulta)
-    .bind(data.biteliminar)
-    .bind(data.bitdetalle)
-    .execute(pool.get_ref())
-    .await;
+    for mut p in data.into_inner() {
 
-    match result {
-        Ok(_) => HttpResponse::Ok().body("Permiso creado correctamente"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al crear permiso"),
+        // 🔥 reglas
+        if p.bitagregar || p.biteditar || p.biteliminar {
+            p.bitdetalle = true;
+        }
+
+        if p.bitdetalle {
+            p.bitconsulta = true;
+        }
+
+        let _ = sqlx::query(
+            r#"
+            INSERT INTO permisosperfil(
+                idperfil,idmodulo,
+                bitagregar,biteditar,
+                bitconsulta,biteliminar,bitdetalle
+            )
+            VALUES($1,$2,$3,$4,$5,$6,$7)
+            ON CONFLICT (idperfil,idmodulo)
+            DO UPDATE SET
+                bitagregar = EXCLUDED.bitagregar,
+                biteditar = EXCLUDED.biteditar,
+                bitconsulta = EXCLUDED.bitconsulta,
+                biteliminar = EXCLUDED.biteliminar,
+                bitdetalle = EXCLUDED.bitdetalle
+            "#
+        )
+        .bind(p.idperfil)
+        .bind(p.idmodulo)
+        .bind(p.bitagregar)
+        .bind(p.biteditar)
+        .bind(p.bitconsulta)
+        .bind(p.biteliminar)
+        .bind(p.bitdetalle)
+        .execute(pool.get_ref())
+        .await;
     }
+
+    HttpResponse::Ok().body("Permisos creados correctamente")
 }
 
 //
@@ -123,7 +139,19 @@ pub async fn guardar_permisos(
     data: web::Json<Vec<PermisoPerfil>>,
 ) -> HttpResponse {
 
-    for p in data.iter() {
+    for mut p in data.into_inner() {
+
+        // 🔥 REGLAS AUTOMÁTICAS
+
+        // Si tiene CRUD → activar detalle
+        if p.bitagregar || p.biteditar || p.biteliminar {
+            p.bitdetalle = true;
+        }
+
+        // Si tiene detalle → activar consulta
+        if p.bitdetalle {
+            p.bitconsulta = true;
+        }
 
         let _ = sqlx::query(
             r#"
@@ -202,6 +230,7 @@ let permisos = sqlx::query_as::<_, PermisoModulo>(
         COALESCE(p.bitconsulta, false) AS bitconsulta,
         COALESCE(p.bitagregar, false) AS bitagregar,
         COALESCE(p.biteditar, false) AS biteditar,
+        COALESCE(p.bitdetalle, false) AS bitdetalle,
         COALESCE(p.biteliminar, false) AS biteliminar
     FROM permisosperfil p
     JOIN modulo m ON m.id = p.idmodulo

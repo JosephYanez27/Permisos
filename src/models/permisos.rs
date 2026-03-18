@@ -32,5 +32,6 @@ pub struct PermisoModulo {
     pub bitagregar: bool,
     pub biteditar: bool,
     pub biteliminar: bool,
+    pub bitdetalle:bool
 }
 

@@ -93,22 +93,12 @@ async function buscarUsuarios(){
 }
 
 function renderTabla(data){
-     console.log("Datos que llegan a la tabla:", data);
 
  const tabla = document.getElementById("tabla-usuarios");
  tabla.innerHTML = "";
 
- if(!Array.isArray(data)){
-  console.error("Data no es arreglo:", data);
-  return;
- }
-
  if(data.length === 0){
-  tabla.innerHTML = `
-   <tr>
-    <td colspan="7">No se encontraron usuarios</td>
-   </tr>
-  `;
+  tabla.innerHTML = `<tr><td colspan="7">No hay datos</td></tr>`;
   return;
  }
 
@@ -117,27 +107,29 @@ function renderTabla(data){
   tabla.innerHTML += `
   <tr>
    <td>${u.strnombreusuario ?? ""}</td>
-  <td>${u.perfil ?? ""}</td>
-<td>${u.estado ?? ""}</td>
+   <td>${u.perfil ?? ""}</td>
+   <td>${u.estado ?? ""}</td>
    <td>${u.strcorreo ?? ""}</td>
    <td>${u.strnumerocelular ?? ""}</td>
 
-<td>
-   <button class="btn-editar" data-permiso="editar" onclick="editar(${u.id})">
-Editar
-</button>
-</td>
+   <td>
+     <button data-permiso="editar" onclick="editar(${u.id})">
+       Editar
+     </button>
+   </td>
 
-<td>
-   <button class="btn-eliminar" data-permiso="eliminar" onclick="eliminar(${u.id})">
-Eliminar
-</button>
-</td>
+   <td>
+     <button data-permiso="eliminar" onclick="eliminar(${u.id})">
+       Eliminar
+     </button>
+   </td>
 
   </tr>
   `;
  });
 
+ // 🔥 AQUI
+ aplicarPermisosEnVista();
 }
 function calcularPaginas(total){
 

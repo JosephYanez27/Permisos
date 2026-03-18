@@ -1,7 +1,6 @@
 async function listarPerfiles() {
 
     const response = await fetchAuth("/perfil?page=1");
-
     if (!response) return;
 
     const data = await response.json();
@@ -16,11 +15,26 @@ async function listarPerfiles() {
                 <td>${p.id}</td>
                 <td>${p.strnombreperfil}</td>
                 <td>${p.bitadministrador}</td>
-                <td><button onclick="editarPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">Editar</button></td>
-                <td><button onclick="eliminarPerfil(${p.id})">Eliminar</button></td>
+
+                <td>
+                  <button data-permiso="editar"
+                    onclick="editarPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">
+                    Editar
+                  </button>
+                </td>
+
+                <td>
+                  <button data-permiso="eliminar"
+                    onclick="eliminarPerfil(${p.id})">
+                    Eliminar
+                  </button>
+                </td>
             </tr>
         `;
     });
+
+    // 🔥 AQUI TAMBIÉN
+    aplicarPermisosEnVista();
 }
 async function agregarPerfil() {
 

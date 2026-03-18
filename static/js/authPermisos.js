@@ -11,6 +11,12 @@ async function aplicarPermisosAuto() {
 
     aplicarPermisosEnVista();
 }
+function tienePermiso(permiso) {
+
+    const permisos = JSON.parse(localStorage.getItem("permisos")) || [];
+
+    return permisos.some(p => p[permiso] === true);
+}
 
 function tienePermiso(tipo) {
 

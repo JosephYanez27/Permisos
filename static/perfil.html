@@ -13,7 +13,9 @@
 <h2>Perfil</h2>
 
 <button onclick="listarPerfiles()">Consultar</button>
-<button onclick="agregarPerfil()">Agregar Perfil</button>
+<button onclick="agregarPerfil()" data-permiso="agregar">
+  Nuevo Perfil
+</button>
 
 <table>
     <thead>
@@ -30,6 +32,7 @@
 
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
+<script src="js/authPermisos.js"></script>
 <script src="js/perfil.js"></script>
 </body>
 </html>
