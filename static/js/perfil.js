@@ -36,54 +36,37 @@ async function listarPerfiles() {
     // 🔥 AQUI TAMBIÉN
     aplicarPermisosEnVista();
 }
-let idPerfilEditando = null;
+async function agregarPerfil() {
 
-// 🔹 Abrir modal nuevo
-function abrirModalPerfil() {
-    idPerfilEditando = null;
+    const nombre = prompt("Nombre del perfil:");
+    if (!nombre) return;
 
-    document.getElementById("tituloModal").innerText = "Nuevo Perfil";
-    document.getElementById("nombrePerfil").value = "";
-    document.getElementById("adminPerfil").checked = false;
+    const admin = confirm("¿Es administrador?");
 
-    document.getElementById("modalPerfil").style.display = "block";
+    const response = await fetchAuth("/perfil", {
+        method: "POST",
+        body: JSON.stringify({
+            strnombreperfil: nombre,
+            bitadministrador: admin
+        })
+    });
+
+    if (!response) return;
+
+    const text = await response.text();
+    alert(text);
+
+    listarPerfiles();
 }
+async function editarPerfil(id, nombreActual, adminActual) {
 
-// 🔹 Abrir modal editar
-function editarPerfil(id, nombreActual, adminActual) {
-    idPerfilEditando = id;
+    const nombre = prompt("Nuevo nombre:", nombreActual);
+    if (!nombre) return;
 
-    document.getElementById("tituloModal").innerText = "Editar Perfil";
-    document.getElementById("nombrePerfil").value = nombreActual;
-    document.getElementById("adminPerfil").checked = adminActual;
+    const admin = confirm("¿Administrador?");
 
-    document.getElementById("modalPerfil").style.display = "block";
-}
-
-// 🔹 Cerrar modal
-function cerrarModalPerfil() {
-    document.getElementById("modalPerfil").style.display = "none";
-}
-
-// 🔹 Guardar
-async function guardarPerfil() {
-
-    const nombre = document.getElementById("nombrePerfil").value.trim();
-    const admin = document.getElementById("adminPerfil").checked;
-
-    if (!nombre) {
-        alert("Nombre requerido");
-        return;
-    }
-
-    const endpoint = idPerfilEditando
-        ? `/perfil/${idPerfilEditando}`
-        : "/perfil";
-
-    const metodo = idPerfilEditando ? "PUT" : "POST";
-
-    const response = await fetchAuth(endpoint, {
-        method: metodo,
+    const response = await fetchAuth(`/perfil/${id}`, {
+        method: "PUT",
         body: JSON.stringify({
             strnombreperfil: nombre,
             bitadministrador: admin
@@ -93,8 +76,6 @@ async function guardarPerfil() {
     if (!response) return;
 
     alert(await response.text());
-
-    cerrarModalPerfil();
     listarPerfiles();
 }
 
