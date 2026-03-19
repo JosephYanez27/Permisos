@@ -40,18 +40,94 @@ th, td {
     border: 1px solid #ccc;
 }
 
+/* Reset básico para asegurar consistencia en diferentes navegadores */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Estilos para el fondo y centrado de la página */
 .login-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
+/* Contenedor principal del formulario */
 .login-container {
-    background: white;
-    padding: 30px;
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título */
+.login-container h2 {
+    color: #333333;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Estilos para los campos de texto y contraseña */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 14px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #d1d5db;
     border-radius: 8px;
-    width: 300px;
+    font-size: 16px;
+    background-color: #f9fafb;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Efecto al seleccionar (focus) un campo */
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    background-color: #ffffff;
+}
+
+/* Contenedor del reCAPTCHA centrado */
+.g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Botón de ingreso */
+.login-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #667eea;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+/* Efecto hover y active (clic) para el botón */
+.login-container button:hover {
+    background-color: #5a67d8;
+}
+
+.login-container button:active {
+    transform: scale(0.98);
 }
 
 .filtro-container {
@@ -234,4 +310,99 @@ input:checked + .slider:before {
 input:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+/* =========================================
+   ESTILOS PARA EL MENÚ PRINCIPAL
+   ========================================= */
+
+/* Estilo base para la página del menú */
+body {
+    background-color: #f4f7f6; /* Un gris muy claro para contrastar con las tarjetas blancas */
+    color: #333;
+}
+
+/* Encabezado (Header) */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between; /* Separa el título del botón */
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Botón de Salir */
+header button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+header button:hover {
+    background-color: #ffffff;
+    color: #764ba2;
+    transform: translateY(-2px);
+}
+
+/* Contenedor principal de la navegación */
+.menu {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Lista dinámica (Grid para las tarjetas) */
+#menu-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    /* Esto crea columnas automáticas que miden al menos 250px */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* Estilos asumiendo que tu JS insertará etiquetas <li> con enlaces <a> o botones dentro */
+#menu-list li {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+#menu-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Si tu JS inserta enlaces (<a>) dentro de los <li> */
+#menu-list li a {
+    display: block;
+    padding: 30px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 4px solid transparent;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+#menu-list li:hover a {
+    color: #667eea;
+    border-bottom-color: #667eea;
 }
