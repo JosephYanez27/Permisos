@@ -48,88 +48,123 @@ th, td {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Estilos para el fondo y centrado de la página */
+/* 🔹 Fondo con degradado más elegante */
 .login-body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Contenedor principal del formulario */
+/* 🔹 Card */
 .login-container {
     background-color: #ffffff;
-    padding: 40px 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 45px 35px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     width: 100%;
     max-width: 400px;
     text-align: center;
+    animation: fadeIn 0.6s ease;
 }
 
-/* Título */
+/* 🔥 Animación */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 🔹 Título */
 .login-container h2 {
-    color: #333333;
+    color: #0f172a;
     margin-bottom: 25px;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 26px;
+    font-weight: 700;
 }
 
-/* Estilos para los campos de texto y contraseña */
+/* 🔹 Inputs */
 .login-container input[type="text"],
 .login-container input[type="password"] {
     width: 100%;
     padding: 14px 15px;
-    margin-bottom: 20px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
+    margin-bottom: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
     background-color: #f9fafb;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: all 0.25s ease;
 }
 
-/* Efecto al seleccionar (focus) un campo */
-.login-container input[type="text"]:focus,
-.login-container input[type="password"]:focus {
+/* 🔥 Focus elegante */
+.login-container input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     background-color: #ffffff;
 }
 
-/* Contenedor del reCAPTCHA centrado */
+/* 🔹 Placeholder más suave */
+.login-container input::placeholder {
+    color: #9ca3af;
+}
+
+/* 🔹 reCAPTCHA */
 .g-recaptcha {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-/* Botón de ingreso */
+/* 🔹 Botón */
 .login-container button {
     width: 100%;
     padding: 14px;
-    background-color: #667eea;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #ffffff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
+    transition: all 0.25s ease;
 }
 
-/* Efecto hover y active (clic) para el botón */
+/* 🔥 Hover bonito */
 .login-container button:hover {
-    background-color: #5a67d8;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
 }
 
+/* 🔥 Click */
 .login-container button:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
+/* 🔹 Error (por si luego quieres usarlo) */
+.error {
+    color: #ef4444;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* 🔹 Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        margin: 0 15px;
+        padding: 30px 20px;
+    }
+}
 .filtro-container {
     margin: 20px 0;
 }
