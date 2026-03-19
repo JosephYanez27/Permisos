@@ -191,7 +191,7 @@ function abrirModal() {
     document.getElementById("celular").value = "";
 
     document.getElementById("estado").value = "1"; // activo por defecto
-
+    document.getElementById("password").disabled = false;
     document.getElementById("modalUsuario").style.display = "block";
 }
 
@@ -290,7 +290,7 @@ async function editar(id) {
         u.idestadousuario;
 
     document.getElementById("password").value = ""; // limpiar password
-
+    document.getElementById("password").disabled = true;
     document.getElementById("modalUsuario").style.display = "block";
 }
 fetch("/menu.html")

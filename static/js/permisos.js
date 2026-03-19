@@ -42,11 +42,10 @@ function renderTabla() {
     tabla.innerHTML = "";
 
     const soloLectura = !puedeEditarPermisos();
+    const disabledGlobal = soloLectura ? "disabled" : "";
+    const disabledAdmin = esAdmin() ? "disabled" : "";
 
     permisosActuales.forEach(p => {
-
-        // 🔥 combinación de reglas
-        const disabled = (soloLectura || esAdmin()) ? "disabled" : "";
 
         tabla.innerHTML += `
             <tr>
@@ -55,34 +54,36 @@ function renderTabla() {
                 <td>
                     <input type="checkbox"
                         ${p.bitagregar ? "checked" : ""}
-                        ${disabled}
+                        ${disabledGlobal} ${disabledAdmin}
                         onchange="cambiar(${p.idmodulo}, 'bitagregar', this.checked)">
                 </td>
 
                 <td>
                     <input type="checkbox"
                         ${p.biteditar ? "checked" : ""}
-                        ${disabled}
+                        ${disabledGlobal} ${disabledAdmin}
                         onchange="cambiar(${p.idmodulo}, 'biteditar', this.checked)">
                 </td>
 
                 <td>
                     <input type="checkbox"
                         ${p.biteliminar ? "checked" : ""}
-                        ${disabled}
+                        ${disabledGlobal} ${disabledAdmin}
                         onchange="cambiar(${p.idmodulo}, 'biteliminar', this.checked)">
                 </td>
 
                 <td>
                     <input type="checkbox"
                         ${p.bitconsulta ? "checked" : ""}
-                        disabled>
+                        ${disabledGlobal} ${disabledAdmin}
+                        onchange="cambiar(${p.idmodulo}, 'bitconsulta', this.checked)">
                 </td>
 
                 <td>
                     <input type="checkbox"
                         ${p.bitdetalle ? "checked" : ""}
-                        disabled>
+                        ${disabledGlobal} ${disabledAdmin}
+                        onchange="cambiar(${p.idmodulo}, 'bitdetalle', this.checked)">
                 </td>
             </tr>
         `;
