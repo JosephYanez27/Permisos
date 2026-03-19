@@ -50,21 +50,53 @@ pub async fn create_perfil(
         return HttpResponse::BadRequest().body("El nombre es obligatorio");
     }
 
+    // 🔥 INSERT y obtener ID
     let result = sqlx::query(
         r#"
         INSERT INTO perfil (strnombreperfil, bitadministrador)
         VALUES ($1, $2)
+        RETURNING id
         "#
     )
     .bind(&data.strnombreperfil)
     .bind(data.bitadministrador)
-    .execute(pool.get_ref())
+    .fetch_one(pool.get_ref())
     .await;
 
-    match result {
-        Ok(_) => HttpResponse::Ok().body("Perfil creado"),
-        Err(_) => HttpResponse::InternalServerError().body("Error al crear perfil"),
+    let row = match result {
+        Ok(r) => r,
+        Err(_) => return HttpResponse::InternalServerError().body("Error al crear perfil"),
+    };
+
+    let idperfil: i32 = row.get("id");
+
+    // 🔥 SI ES ADMIN → DAR TODOS LOS PERMISOS
+    if data.bitadministrador {
+
+        let _ = sqlx::query(
+            r#"
+            INSERT INTO permisosperfil (
+                idperfil, idmodulo,
+                bitagregar, biteditar,
+                bitconsulta, biteliminar, bitdetalle
+            )
+            SELECT $1, m.id, true, true, true, true, true
+            FROM modulo m
+            ON CONFLICT (idperfil,idmodulo)
+            DO UPDATE SET
+                bitagregar = true,
+                biteditar = true,
+                bitconsulta = true,
+                biteliminar = true,
+                bitdetalle = true
+            "#
+        )
+        .bind(idperfil)
+        .execute(pool.get_ref())
+        .await;
     }
+
+    HttpResponse::Ok().body("Perfil creado correctamente")
 }
 
 //
@@ -94,8 +126,57 @@ pub async fn update_perfil(
     .await;
 
     match result {
-        Ok(r) if r.rows_affected() > 0 => HttpResponse::Ok().body("Perfil actualizado"),
+        Ok(r) if r.rows_affected() > 0 => {
+
+            // 🔥 SI ES ADMIN → DAR TODO
+            if data.bitadministrador {
+
+                let _ = sqlx::query(
+                    r#"
+                    INSERT INTO permisosperfil (
+                        idperfil, idmodulo,
+                        bitagregar, biteditar,
+                        bitconsulta, biteliminar, bitdetalle
+                    )
+                    SELECT $1, m.id, true, true, true, true, true
+                    FROM modulo m
+                    ON CONFLICT (idperfil,idmodulo)
+                    DO UPDATE SET
+                        bitagregar = true,
+                        biteditar = true,
+                        bitconsulta = true,
+                        biteliminar = true,
+                        bitdetalle = true
+                    "#
+                )
+                .bind(id)
+                .execute(pool.get_ref())
+                .await;
+
+            } else {
+                // 🔥 SI YA NO ES ADMIN → QUITAR TODO
+
+                let _ = sqlx::query(
+                    r#"
+                    UPDATE permisosperfil
+                    SET bitagregar = false,
+                        biteditar = false,
+                        bitconsulta = false,
+                        biteliminar = false,
+                        bitdetalle = false
+                    WHERE idperfil = $1
+                    "#
+                )
+                .bind(id)
+                .execute(pool.get_ref())
+                .await;
+            }
+
+            HttpResponse::Ok().body("Perfil actualizado")
+        }
+
         Ok(_) => HttpResponse::NotFound().body("Perfil no encontrado"),
+
         Err(_) => HttpResponse::InternalServerError().body("Error al actualizar"),
     }
 }

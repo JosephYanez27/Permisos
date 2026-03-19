@@ -42,5 +42,15 @@ function aplicarPermisosEnVista() {
         }
     });
 }
+function puedeEditarPermisos() {
+
+    const modulo = document.body.dataset.modulo; // permisosperfil
+
+    const permiso = permisosGlobal.find(p => p.modulo === modulo);
+
+    if (!permiso) return false;
+
+    return permiso.biteditar || permiso.bitagregar;
+}
 
 window.aplicarPermisosAuto = aplicarPermisosAuto;

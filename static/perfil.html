@@ -4,7 +4,7 @@
     <title>Perfil</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-modulo="perfil">
 
 <div class="breadcrumb">
     <a href="menu.html">Menú</a>>Seguridad > Perfil
@@ -13,23 +13,44 @@
 <h2>Perfil</h2>
 
 <button onclick="listarPerfiles()">Consultar</button>
-<button onclick="agregarPerfil()" data-permiso="agregar">
+<button onclick="abrirModalPerfil()" data-permiso="agregar">
   Nuevo Perfil
 </button>
 
 <table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Administrador</th>
-            <th>Editar</th>
-            <th>Eliminar</th>
-        </tr>
-    </thead>
+ <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Administrador</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+    </tr>
+</thead>
     <tbody id="tabla-perfil"></tbody>
 </table>
+<div id="modalPerfil" class="modal">
+  <div class="modal-content">
 
+    <span class="close" onclick="cerrarModalPerfil()">&times;</span>
+
+    <h3 id="tituloModal">Nuevo Perfil</h3>
+
+    <label>Nombre:</label>
+    <input type="text" id="nombrePerfil">
+
+    <label>Administrador:</label>
+    <label class="switch">
+        <input type="checkbox" id="adminPerfil">
+        <span class="slider"></span>
+    </label>
+
+    <br><br>
+
+    <button onclick="guardarPerfil()">Guardar</button>
+    <button onclick="cerrarModalPerfil()">Cancelar</button>
+
+  </div>
+</div>
 
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>

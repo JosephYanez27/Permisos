@@ -198,14 +198,19 @@ input:disabled {
   height: 24px;
 }
 
-.switch input { display: none; }
+.switch input {
+  display: none;
+}
 
 .slider {
   position: absolute;
   cursor: pointer;
   background-color: #ccc;
   border-radius: 24px;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .slider:before {
@@ -217,7 +222,6 @@ input:disabled {
   bottom: 3px;
   background-color: white;
   border-radius: 50%;
-  transition: 0.3s;
 }
 
 input:checked + .slider {
@@ -226,4 +230,8 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(26px);
+}
+input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }

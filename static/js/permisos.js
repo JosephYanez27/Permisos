@@ -41,16 +41,49 @@ function renderTabla() {
     const tabla = document.getElementById("tabla-permisos");
     tabla.innerHTML = "";
 
+    const soloLectura = !puedeEditarPermisos();
+
     permisosActuales.forEach(p => {
+
+        // 🔥 combinación de reglas
+        const disabled = (soloLectura || esAdmin()) ? "disabled" : "";
 
         tabla.innerHTML += `
             <tr>
                 <td>${p.modulo}</td>
-                <td><input type="checkbox" ${p.bitagregar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitagregar', this.checked)"></td>
-                <td><input type="checkbox" ${p.biteditar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'biteditar', this.checked)"></td>
-                <td><input type="checkbox" ${p.biteliminar ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'biteliminar', this.checked)"></td>
-                <td><input type="checkbox" ${p.bitconsulta ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitconsulta', this.checked)"></td>
-                <td><input type="checkbox" ${p.bitdetalle ? "checked" : ""} onchange="cambiar(${p.idmodulo}, 'bitdetalle', this.checked)"></td>
+
+                <td>
+                    <input type="checkbox"
+                        ${p.bitagregar ? "checked" : ""}
+                        ${disabled}
+                        onchange="cambiar(${p.idmodulo}, 'bitagregar', this.checked)">
+                </td>
+
+                <td>
+                    <input type="checkbox"
+                        ${p.biteditar ? "checked" : ""}
+                        ${disabled}
+                        onchange="cambiar(${p.idmodulo}, 'biteditar', this.checked)">
+                </td>
+
+                <td>
+                    <input type="checkbox"
+                        ${p.biteliminar ? "checked" : ""}
+                        ${disabled}
+                        onchange="cambiar(${p.idmodulo}, 'biteliminar', this.checked)">
+                </td>
+
+                <td>
+                    <input type="checkbox"
+                        ${p.bitconsulta ? "checked" : ""}
+                        disabled>
+                </td>
+
+                <td>
+                    <input type="checkbox"
+                        ${p.bitdetalle ? "checked" : ""}
+                        disabled>
+                </td>
             </tr>
         `;
     });
@@ -98,4 +131,15 @@ permisosActuales.forEach(p => {
         }
     }
 
+});
+function esAdmin() {
+
+    return document.getElementById("perfil-select")
+        .selectedOptions[0]
+        .text.toLowerCase()
+        .includes("admin");
+}
+document.addEventListener("DOMContentLoaded", async () => {
+    await aplicarPermisosAuto();
+    await cargarPerfiles();
 });

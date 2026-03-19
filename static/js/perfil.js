@@ -10,27 +10,26 @@ async function listarPerfiles() {
 
     data.forEach(p => {
 
-        tabla.innerHTML += `
-            <tr>
-                <td>${p.id}</td>
-                <td>${p.strnombreperfil}</td>
-                <td>${p.bitadministrador}</td>
+      tabla.innerHTML += `
+    <tr>
+        <td>${p.strnombreperfil}</td>
+        <td>${p.bitadministrador ? "Sí" : "No"}</td>
 
-                <td>
-                  <button data-permiso="editar"
-                    onclick="editarPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">
-                    Editar
-                  </button>
-                </td>
+        <td>
+          <button data-permiso="editar"
+            onclick="abrirModalPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">
+            Editar
+          </button>
+        </td>
 
-                <td>
-                  <button data-permiso="eliminar"
-                    onclick="eliminarPerfil(${p.id})">
-                    Eliminar
-                  </button>
-                </td>
-            </tr>
-        `;
+        <td>
+          <button data-permiso="eliminar"
+            onclick="eliminarPerfil(${p.id})">
+            Eliminar
+          </button>
+        </td>
+    </tr>
+`;
     });
 
     // 🔥 AQUI TAMBIÉN
@@ -92,3 +91,57 @@ async function eliminarPerfil(id) {
     alert(await response.text());
     listarPerfiles();
 }
+let idPerfilEditando = null;
+
+function abrirModalPerfil(id = null, nombre = "", admin = false) {
+
+    idPerfilEditando = id;
+
+    document.getElementById("modalPerfil").style.display = "block";
+
+    document.getElementById("nombrePerfil").value = nombre;
+    document.getElementById("adminPerfil").checked = admin;
+
+    document.getElementById("tituloModal").innerText =
+        id ? "Editar Perfil" : "Nuevo Perfil";
+}
+
+function cerrarModalPerfil() {
+    document.getElementById("modalPerfil").style.display = "none";
+}
+async function guardarPerfil() {
+
+    const nombre = document.getElementById("nombrePerfil").value.trim();
+    const admin = document.getElementById("adminPerfil").checked;
+
+    if (!nombre) {
+        alert("Nombre requerido");
+        return;
+    }
+
+    const metodo = idPerfilEditando ? "PUT" : "POST";
+    const endpoint = idPerfilEditando
+        ? `/perfil/${idPerfilEditando}`
+        : "/perfil";
+
+    const response = await fetchAuth(endpoint, {
+        method: metodo,
+        body: JSON.stringify({
+            strnombreperfil: nombre,
+            bitadministrador: admin
+        })
+    });
+
+    if (!response) return;
+
+    alert(await response.text());
+
+    cerrarModalPerfil();
+    listarPerfiles();
+}
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await aplicarPermisosAuto(); // 🔥 PRIMERO permisos
+    await listarPerfiles();      // 🔥 DESPUÉS render
+
+});
