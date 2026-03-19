@@ -27,7 +27,7 @@ async function login() {
 
     try {
 
-        const response = await fetch("/login", {
+        const response = await fetch(`${API_URL.replace("/api", "")}/login`,  {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -59,7 +59,7 @@ async function login() {
 localStorage.setItem("token", data.token);
 
 // 🔥 OBTENER PERMISOS DESPUÉS DEL LOGIN
-const resPermisos = await fetch("/mis-permisos", {
+const resPermisos = await fetch(`${API_URL}/mis-permisos`, {
     headers: {
         "Authorization": "Bearer " + data.token
     }
