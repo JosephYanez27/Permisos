@@ -1,5 +1,5 @@
 use actix_web::{get, post, put, delete, web, HttpResponse};
-use sqlx::PgPool;
+use sqlx::{PgPool,Row};
 use std::collections::HashMap;
 use crate::models::perfil::{Perfil, CrearPerfil};
 
