@@ -69,7 +69,20 @@ where
                 claims.id_perfil
             };
             // 🔥 Aquí se libera el préstamo de req.extensions()
+            // ==============================
+// 🔥 ADMIN: acceso total
+// ==============================
+let es_admin = sqlx::query_scalar::<_, bool>(
+    "SELECT bitadministrador FROM perfil WHERE id = $1"
+)
+.bind(id_perfil)
+.fetch_one(&pool)
+.await
+.unwrap_or(false);
 
+if es_admin {
+    return srv.call(req).await;
+}
             // ==============================
             // 2️⃣ Determinar módulo por URL
             // ==============================

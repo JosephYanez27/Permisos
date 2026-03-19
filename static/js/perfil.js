@@ -36,37 +36,54 @@ async function listarPerfiles() {
     // 🔥 AQUI TAMBIÉN
     aplicarPermisosEnVista();
 }
-async function agregarPerfil() {
+let idPerfilEditando = null;
 
-    const nombre = prompt("Nombre del perfil:");
-    if (!nombre) return;
+// 🔹 Abrir modal nuevo
+function abrirModalPerfil() {
+    idPerfilEditando = null;
 
-    const admin = confirm("¿Es administrador?");
+    document.getElementById("tituloModal").innerText = "Nuevo Perfil";
+    document.getElementById("nombrePerfil").value = "";
+    document.getElementById("adminPerfil").checked = false;
 
-    const response = await fetchAuth("/perfil", {
-        method: "POST",
-        body: JSON.stringify({
-            strnombreperfil: nombre,
-            bitadministrador: admin
-        })
-    });
-
-    if (!response) return;
-
-    const text = await response.text();
-    alert(text);
-
-    listarPerfiles();
+    document.getElementById("modalPerfil").style.display = "block";
 }
-async function editarPerfil(id, nombreActual, adminActual) {
 
-    const nombre = prompt("Nuevo nombre:", nombreActual);
-    if (!nombre) return;
+// 🔹 Abrir modal editar
+function editarPerfil(id, nombreActual, adminActual) {
+    idPerfilEditando = id;
 
-    const admin = confirm("¿Administrador?");
+    document.getElementById("tituloModal").innerText = "Editar Perfil";
+    document.getElementById("nombrePerfil").value = nombreActual;
+    document.getElementById("adminPerfil").checked = adminActual;
 
-    const response = await fetchAuth(`/perfil/${id}`, {
-        method: "PUT",
+    document.getElementById("modalPerfil").style.display = "block";
+}
+
+// 🔹 Cerrar modal
+function cerrarModalPerfil() {
+    document.getElementById("modalPerfil").style.display = "none";
+}
+
+// 🔹 Guardar
+async function guardarPerfil() {
+
+    const nombre = document.getElementById("nombrePerfil").value.trim();
+    const admin = document.getElementById("adminPerfil").checked;
+
+    if (!nombre) {
+        alert("Nombre requerido");
+        return;
+    }
+
+    const endpoint = idPerfilEditando
+        ? `/perfil/${idPerfilEditando}`
+        : "/perfil";
+
+    const metodo = idPerfilEditando ? "PUT" : "POST";
+
+    const response = await fetchAuth(endpoint, {
+        method: metodo,
         body: JSON.stringify({
             strnombreperfil: nombre,
             bitadministrador: admin
@@ -76,27 +93,11 @@ async function editarPerfil(id, nombreActual, adminActual) {
     if (!response) return;
 
     alert(await response.text());
-    listarPerfiles();
-}async function editarPerfil(id, nombreActual, adminActual) {
 
-    const nombre = prompt("Nuevo nombre:", nombreActual);
-    if (!nombre) return;
-
-    const admin = confirm("¿Administrador?");
-
-    const response = await fetchAuth(`/perfil/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-            strnombreperfil: nombre,
-            bitadministrador: admin
-        })
-    });
-
-    if (!response) return;
-
-    alert(await response.text());
+    cerrarModalPerfil();
     listarPerfiles();
 }
+
 async function eliminarPerfil(id) {
 
     if (!confirm("¿Eliminar perfil?")) return;

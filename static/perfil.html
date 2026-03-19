@@ -29,6 +29,29 @@
     </thead>
     <tbody id="tabla-perfil"></tbody>
 </table>
+<div id="modalPerfil" class="modal">
+  <div class="modal-content">
+
+    <span onclick="cerrarModalPerfil()" class="close">&times;</span>
+
+    <h3 id="tituloModal">Nuevo Perfil</h3>
+
+    <label>Nombre:</label>
+    <input type="text" id="nombrePerfil">
+
+    <label>Administrador:</label>
+    <label class="switch">
+      <input type="checkbox" id="adminPerfil">
+      <span class="slider"></span>
+    </label>
+
+    <br><br>
+
+    <button onclick="guardarPerfil()">Guardar</button>
+    <button onclick="cerrarModalPerfil()">Cancelar</button>
+
+  </div>
+</div>
 
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
