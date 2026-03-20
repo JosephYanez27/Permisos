@@ -140,8 +140,8 @@ async function guardarPerfil() {
     listarPerfiles();
 }
 document.addEventListener("DOMContentLoaded", async () => {
-
+    await cargarLayout();
     await aplicarPermisosAuto(); // 🔥 PRIMERO permisos
     await listarPerfiles();      // 🔥 DESPUÉS render
-    await cargarLayout();
+    
 });

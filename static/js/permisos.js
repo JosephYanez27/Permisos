@@ -141,7 +141,8 @@ function esAdmin() {
         .includes("admin");
 }
 document.addEventListener("DOMContentLoaded", async () => {
+     await cargarLayout();
     await aplicarPermisosAuto();
     await cargarPerfiles();
-    await cargarLayout();
+   
 });
