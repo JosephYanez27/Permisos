@@ -124,6 +124,71 @@ header button {
     color: white;
     transform: translateX(5px);
 }
+/* CONTENEDOR */
+.menu {
+    width: 240px;
+    height: 100vh;
+    background: #0f172a;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+}
+
+/* PADRES */
+.menu-item {
+    position: relative;
+}
+
+.menu-padre {
+    display: block;
+    padding: 12px 20px;
+    color: #cbd5f5;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.menu-padre:hover {
+    background: #1e293b;
+    color: #fff;
+}
+
+/* SUBMENÚ (oculto por defecto) */
+.submenu {
+    position: absolute;
+    left: 240px;
+    top: 0;
+    width: 200px;
+    background: #1e293b;
+    border-radius: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.25s ease;
+}
+
+/* Mostrar submenu al hover */
+.menu-item:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+/* LINKS HIJOS */
+.submenu li a {
+    display: block;
+    padding: 10px 15px;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.submenu li a:hover {
+    background: #3b82f6;
+    color: #fff;
+    padding-left: 20px;
+}
 
 /* ===============================
    🔹 CONTENIDO
