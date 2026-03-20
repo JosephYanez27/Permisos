@@ -143,5 +143,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await aplicarPermisosAuto(); // 🔥 PRIMERO permisos
     await listarPerfiles();      // 🔥 DESPUÉS render
-
+    await cargarLayout();
 });

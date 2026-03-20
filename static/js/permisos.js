@@ -143,4 +143,5 @@ function esAdmin() {
 document.addEventListener("DOMContentLoaded", async () => {
     await aplicarPermisosAuto();
     await cargarPerfiles();
+    await cargarLayout();
 });
