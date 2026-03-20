@@ -53,6 +53,9 @@ header button {
 /* ===============================
    🔹 MENU SIDEBAR
 ================================ */
+/* ===============================
+   🔹 MENU SIDEBAR
+================================ */
 .menu {
     width: 240px;
     height: 100vh;
@@ -67,13 +70,44 @@ header button {
     list-style: none;
 }
 
+/* 🔥 PADRE (modulo principal) */
 .menu strong {
     display: block;
     padding: 10px 15px;
     color: #cbd5f5;
     font-size: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+/* 🔥 Línea deslizante */
+.menu strong::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--primary);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s ease;
+}
+
+/* 🔥 Hover padre */
+.menu strong:hover {
+    background: rgba(255,255,255,0.05);
+    color: white;
+    padding-left: 20px;
+}
+
+/* 🔥 Activar animación */
+.menu strong:hover::before {
+    transform: scaleY(1);
+}
+
+/* 🔹 LINKS HIJOS */
 .menu a {
     display: block;
     padding: 10px 15px;
@@ -81,12 +115,14 @@ header button {
     text-decoration: none;
     margin: 4px 10px;
     border-radius: 6px;
-    transition: 0.2s;
+    transition: all 0.25s ease;
 }
 
+/* 🔥 Hover hijo con slide */
 .menu a:hover {
     background: var(--primary);
     color: white;
+    transform: translateX(5px);
 }
 
 /* ===============================
