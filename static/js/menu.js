@@ -8,7 +8,9 @@ async function cargarMenu(){
  }
 
  const data = await res.json();
+
  const menu = document.getElementById("menu-list");
+
  menu.innerHTML = "";
 
  data.forEach(padre => {
@@ -19,24 +21,27 @@ async function cargarMenu(){
   li.innerHTML = `
     <div class="menu-padre">
         ${padre.nombre}
-        <span>▸</span>
     </div>
-    <ul class="submenu">
-        ${padre.hijos.map(h => `
-            <li>
-                <a href="${h.nombre}.html">${h.nombre}</a>
-            </li>
-        `).join("")}
-    </ul>
   `;
 
-  // 🔥 toggle submenu
-  li.querySelector(".menu-padre").addEventListener("click", () => {
-      li.classList.toggle("open");
+  let ul = document.createElement("ul");
+  ul.classList.add("submenu");
+
+  padre.hijos.forEach(hijo => {
+
+    ul.innerHTML += `
+      <li>
+        <a href="${hijo.nombre}.html">
+          ${hijo.nombre}
+        </a>
+      </li>
+    `;
+
   });
 
+  li.appendChild(ul);
   menu.appendChild(li);
- });
+});
 
 }
 async function aplicarPermisosAuto(){
