@@ -16,26 +16,32 @@ async function cargarMenu(){
  data.forEach(padre => {
 
   let li = document.createElement("li");
-  li.innerHTML = `<strong>${padre.nombre}</strong>`;
+  li.classList.add("menu-item");
+
+  li.innerHTML = `
+    <div class="menu-padre">
+        ${padre.nombre}
+    </div>
+  `;
 
   let ul = document.createElement("ul");
+  ul.classList.add("submenu");
 
   padre.hijos.forEach(hijo => {
 
-   ul.innerHTML += `
-     <li>
-       <a href="${hijo.nombre}.html">
-         ${hijo.nombre}
-       </a>
-     </li>
-   `;
+    ul.innerHTML += `
+      <li>
+        <a href="${hijo.nombre}.html">
+          ${hijo.nombre}
+        </a>
+      </li>
+    `;
 
   });
 
   li.appendChild(ul);
   menu.appendChild(li);
-
- });
+});
 
 }
 async function aplicarPermisosAuto(){

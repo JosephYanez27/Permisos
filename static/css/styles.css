@@ -56,75 +56,9 @@ header button {
 /* ===============================
    🔹 MENU SIDEBAR
 ================================ */
-.menu {
-    width: 240px;
-    height: 100vh;
-    background: var(--sidebar);
-    position: fixed;
-    top: 60px;
-    left: 0;
-    overflow-y: auto;
-}
-
-.menu ul {
-    list-style: none;
-}
-
-/* 🔥 PADRE (modulo principal) */
-.menu strong {
-    display: block;
-    padding: 10px 15px;
-    color: #cbd5f5;
-    font-size: 13px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-/* 🔥 Línea deslizante */
-.menu strong::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background: var(--primary);
-    transform: scaleY(0);
-    transform-origin: top;
-    transition: transform 0.3s ease;
-}
-
-/* 🔥 Hover padre */
-.menu strong:hover {
-    background: rgba(255,255,255,0.05);
-    color: white;
-    padding-left: 20px;
-}
-
-/* 🔥 Activar animación */
-.menu strong:hover::before {
-    transform: scaleY(1);
-}
-
-/* 🔹 LINKS HIJOS */
-.menu a {
-    display: block;
-    padding: 10px 15px;
-    color: #94a3b8;
-    text-decoration: none;
-    margin: 4px 10px;
-    border-radius: 6px;
-    transition: all 0.25s ease;
-}
-
-/* 🔥 Hover hijo con slide */
-.menu a:hover {
-    background: var(--primary);
-    color: white;
-    transform: translateX(5px);
-}
-/* CONTENEDOR */
+/* ===============================
+   🔹 SIDEBAR
+================================ */
 .menu {
     width: 240px;
     height: 100vh;
@@ -133,61 +67,110 @@ header button {
     top: 0;
     left: 0;
     padding-top: 20px;
+    overflow-y: auto;
 }
 
-/* PADRES */
+/* ===============================
+   🔹 ITEM PADRE
+================================ */
 .menu-item {
     position: relative;
 }
 
+/* PADRE */
 .menu-padre {
     display: block;
-    padding: 12px 20px;
+    padding: 12px 18px;
     color: #cbd5f5;
     font-weight: 600;
     cursor: pointer;
+    position: relative;
     transition: all 0.3s ease;
 }
 
+/* 🔥 Línea animada */
+.menu-padre::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: #3b82f6;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.3s ease;
+}
+
+/* 🔥 Hover padre */
 .menu-padre:hover {
     background: #1e293b;
     color: #fff;
+    padding-left: 22px;
 }
 
-/* SUBMENÚ (oculto por defecto) */
+/* 🔥 Activar línea */
+.menu-padre:hover::before {
+    transform: scaleY(1);
+}
+
+/* ===============================
+   🔹 SUBMENÚ
+================================ */
 .submenu {
     position: absolute;
     left: 240px;
     top: 0;
     width: 200px;
     background: #1e293b;
-    border-radius: 6px;
+    border-radius: 8px;
+    padding: 6px 0;
+
     opacity: 0;
     visibility: hidden;
     transform: translateX(-10px);
     transition: all 0.25s ease;
 }
 
-/* Mostrar submenu al hover */
+/* 🔥 Mostrar submenu */
 .menu-item:hover .submenu {
     opacity: 1;
     visibility: visible;
     transform: translateX(0);
 }
 
-/* LINKS HIJOS */
-.submenu li a {
+/* ===============================
+   🔹 LINKS HIJOS
+================================ */
+.submenu li {
+    list-style: none;
+}
+
+.submenu a {
     display: block;
     padding: 10px 15px;
     color: #94a3b8;
     text-decoration: none;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
 }
 
-.submenu li a:hover {
+/* 🔥 Hover hijo */
+.submenu a:hover {
     background: #3b82f6;
-    color: #fff;
-    padding-left: 20px;
+    color: white;
+    transform: translateX(6px);
+}
+
+/* ===============================
+   🔹 SCROLL BONITO
+================================ */
+.menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 10px;
 }
 
 /* ===============================
