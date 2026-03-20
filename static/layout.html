@@ -1,8 +1,14 @@
-<header>
+<header class="topbar">
+    <button id="btn-menu">☰</button>
     <h2>Menú Principal</h2>
-    <button onclick="logout()">Salir</button>
 </header>
 
-<nav class="menu">
+<nav class="menu" id="sidebar">
     <ul id="menu-list"></ul>
+
+    <div class="menu-footer">
+        <button onclick="logout()">Cerrar sesión</button>
+    </div>
 </nav>
+
+<div class="overlay" id="overlay"></div>
