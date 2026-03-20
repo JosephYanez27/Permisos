@@ -61,7 +61,7 @@ async function cargarLayout() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-
+await cargarLayout();
  await  aplicarPermisosAuto();
 
 
