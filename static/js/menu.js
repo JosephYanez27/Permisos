@@ -49,6 +49,16 @@ async function aplicarPermisosAuto(){
  localStorage.setItem("permisos", JSON.stringify(data));
 
 }
+async function cargarLayout() {
+
+    const res = await fetch("layout.html");
+    const html = await res.text();
+
+    document.getElementById("layout").innerHTML = html;
+
+    // 🔥 después de cargar layout → cargar menú
+    await cargarMenu();
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
 
