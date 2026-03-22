@@ -1,6 +1,6 @@
-use actix_web::{get, web, HttpRequest, HttpResponse, HttpMessage};
+use actix_web::{get, web,post, put, delete, HttpRequest, HttpResponse, HttpMessage};
 use sqlx::PgPool;
-use crate::models::modulo::Modulo;
+use crate::models::modulo::{CrearModulo, Modulo};
 use crate::utils::jwt::Claims;
 use serde_json::json;
 
@@ -97,4 +97,93 @@ let result = sqlx::query_as::<_, Modulo>(
     }
 
     HttpResponse::Ok().json(menu)
+}
+
+#[get("/modulo")]
+pub async fn get_modulos(pool: web::Data<PgPool>) -> HttpResponse {
+
+    let result = sqlx::query_as::<_, Modulo>(
+        "SELECT id, strnombremodulo, idmodulopadre FROM modulo ORDER BY id"
+    )
+    .fetch_all(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(data) => HttpResponse::Ok().json(data),
+        Err(_) => HttpResponse::InternalServerError().body("Error al obtener módulos"),
+    }
+}
+
+#[post("/modulo")]
+pub async fn create_modulo(
+    pool: web::Data<PgPool>,
+    data: web::Json<CrearModulo>,
+) -> HttpResponse {
+
+    let result = sqlx::query(
+        r#"
+        INSERT INTO modulo (strnombremodulo, idmodulopadre)
+        VALUES ($1, $2)
+        "#
+    )
+    .bind(&data.strnombremodulo)
+    .bind(data.idmodulopadre)
+    .execute(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok().body("Módulo creado"),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            HttpResponse::InternalServerError().body("Error al crear módulo")
+        }
+    }
+}
+#[put("/modulo/{id}")]
+pub async fn update_modulo(
+    pool: web::Data<PgPool>,
+    path: web::Path<i32>,
+    data: web::Json<CrearModulo>,
+) -> HttpResponse {
+
+    let id = path.into_inner();
+
+    let result = sqlx::query(
+        r#"
+        UPDATE modulo
+        SET strnombremodulo = $1,
+            idmodulopadre = $2
+        WHERE id = $3
+        "#
+    )
+    .bind(&data.strnombremodulo)
+    .bind(data.idmodulopadre)
+    .bind(id)
+    .execute(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok().body("Módulo actualizado"),
+        Err(_) => HttpResponse::InternalServerError().body("Error al actualizar"),
+    }
+}
+#[delete("/modulo/{id}")]
+pub async fn delete_modulo(
+    pool: web::Data<PgPool>,
+    path: web::Path<i32>,
+) -> HttpResponse {
+
+    let id = path.into_inner();
+
+    let result = sqlx::query(
+        "DELETE FROM modulo WHERE id = $1"
+    )
+    .bind(id)
+    .execute(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok().body("Módulo eliminado"),
+        Err(_) => HttpResponse::InternalServerError().body("Error al eliminar"),
+    }
 }

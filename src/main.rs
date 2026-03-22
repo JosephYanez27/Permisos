@@ -211,7 +211,10 @@ async fn main() -> std::io::Result<()> {
                     .service(delete_usuario)
 
                     .service(get_menu)
-                   
+                   .service(get_modulos)
+                     .service(create_modulo)
+                     .service(update_modulo)
+                     .service(delete_modulo)
 
                     .service(get_permisos_por_perfil)
                     .service(get_permiso_by_id)
@@ -220,7 +223,7 @@ async fn main() -> std::io::Result<()> {
                     .service(delete_permiso)
 
                     .service(mis_permisos)
-
+                     
                     .service(principal1)
                     .service(principal1_1)
                     .service(principal1_2)

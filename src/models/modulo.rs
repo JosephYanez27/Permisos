@@ -8,7 +8,7 @@ pub struct Modulo {
     pub idmodulopadre: Option<i32>
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct CrearModulo {
     pub strnombremodulo: String,
     pub idmodulopadre: Option<i32>
