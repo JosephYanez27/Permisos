@@ -31,6 +31,13 @@ pub async fn get_permisos_por_perfil(
         LEFT JOIN permisosperfil p 
             ON p.idmodulo = m.id 
             AND p.idperfil = $1
+
+        -- 🔥 SOLO HIJOS (NO PADRES)
+        WHERE NOT EXISTS (
+            SELECT 1 FROM modulo hijo
+            WHERE hijo.idmodulopadre = m.id
+        )
+
         ORDER BY m.id
         "#
     )

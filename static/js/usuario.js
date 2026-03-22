@@ -339,6 +339,101 @@ async function cargarPerfiles() {
 
     }
 }
+function calcularPaginas(total){
+
+ const limit = 10;
+ totalPaginas = Math.ceil(total / limit);
+
+ let html = "";
+
+ // 🔹 INICIO
+ html += `
+   <button onclick="irInicio()">⏮</button>
+ `;
+
+ // 🔹 ANTERIOR
+ html += `
+   <button onclick="irAnterior()">◀</button>
+ `;
+
+ // 🔹 PÁGINA ACTUAL
+ html += `
+   <span style="margin: 0 10px;">
+     Página ${pagina} de ${totalPaginas}
+   </span>
+ `;
+
+ // 🔹 SIGUIENTE
+ html += `
+   <button onclick="irSiguiente()">▶</button>
+ `;
+
+ // 🔹 FINAL
+ html += `
+   <button onclick="irFinal()">⏭</button>
+ `;
+
+ document.getElementById("paginacion").innerHTML = html;
+}
+function calcularPaginas(total){
+
+ const limit = 10;
+ totalPaginas = Math.ceil(total / limit);
+
+ let html = "";
+
+ // 🔹 INICIO
+ html += `
+   <button onclick="irInicio()">⏮</button>
+ `;
+
+ // 🔹 ANTERIOR
+ html += `
+   <button onclick="irAnterior()">◀</button>
+ `;
+
+ // 🔹 PÁGINA ACTUAL
+ html += `
+   <span style="margin: 0 10px;">
+     Página ${pagina} de ${totalPaginas}
+   </span>
+ `;
+
+ // 🔹 SIGUIENTE
+ html += `
+   <button onclick="irSiguiente()">▶</button>
+ `;
+
+ // 🔹 FINAL
+ html += `
+   <button onclick="irFinal()">⏭</button>
+ `;
+
+ document.getElementById("paginacion").innerHTML = html;
+}
+function irInicio(){
+ pagina = 1;
+ buscarUsuarios();
+}
+
+function irAnterior(){
+ if(pagina > 1){
+  pagina--;
+  buscarUsuarios();
+ }
+}
+
+function irSiguiente(){
+ if(pagina < totalPaginas){
+  pagina++;
+  buscarUsuarios();
+ }
+}
+
+function irFinal(){
+ pagina = totalPaginas;
+ buscarUsuarios();
+}
 
 
 // 🔹 Exponer funciones
