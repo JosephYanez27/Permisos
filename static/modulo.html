@@ -62,7 +62,7 @@
     <div id="layout"></div>
 
 <div class="breadcrumb">
-    <a href="menu.html">Menú</a>>Seguridad ><a href="modulo.html}"> Modulo</a>
+    <a href="menu.html">Menú</a>>Seguridad ><a href="modulo.html"> Modulo</a>
 </div>
 
 <button data-permiso="agregar" onclick="abrirModal()">
@@ -90,7 +90,7 @@
         <input id="nombre" placeholder="Nombre módulo">
 
         <select id="padre">
-            <option value="">Sin padre</option>
+            <option value="">Modulo</option>
         </select>
 
         <button onclick="guardar()">Guardar</button>
@@ -99,7 +99,19 @@
 
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/authPermisos.js"></script>
 <script src="js/modulo.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded",async () => {
+    await cargarLayout();
+ await aplicarPermisosAuto();
+
+
+});
+</script>
 
 </body>
 </html>
