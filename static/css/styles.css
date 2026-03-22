@@ -59,120 +59,78 @@ header button {
 /* ===============================
    🔹 SIDEBAR
 ================================ */
-.menu {
-    width: 240px;
-    height: 100vh;
+/* 🔹 TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: #0f172a;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding-top: 20px;
-    overflow-y: auto;
+    color: white;
+    padding: 10px 20px;
 }
 
-/* ===============================
-   🔹 ITEM PADRE
-================================ */
-.menu-item {
+.topbar .right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 🔹 MENU HORIZONTAL */
+.menu-horizontal {
+    background: #1e293b;
+}
+
+.menu-horizontal ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-horizontal li {
     position: relative;
 }
 
 /* PADRE */
-.menu-padre {
+.menu-horizontal > ul > li > a {
     display: block;
     padding: 12px 18px;
     color: #cbd5f5;
+    text-decoration: none;
     font-weight: 600;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
 }
 
-/* 🔥 Línea animada */
-.menu-padre::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
-    background: #3b82f6;
-    transform: scaleY(0);
-    transform-origin: top;
-    transition: transform 0.3s ease;
+.menu-horizontal > ul > li:hover {
+    background: #334155;
 }
 
-/* 🔥 Hover padre */
-.menu-padre:hover {
-    background: #1e293b;
-    color: #fff;
-    padding-left: 22px;
-}
-
-/* 🔥 Activar línea */
-.menu-padre:hover::before {
-    transform: scaleY(1);
-}
-
-/* ===============================
-   🔹 SUBMENÚ
-================================ */
+/* 🔥 SUBMENU */
 .submenu {
     position: absolute;
-    left: 240px;
-    top: 0;
-    width: 200px;
+    top: 100%;
+    left: 0;
     background: #1e293b;
-    border-radius: 8px;
-    padding: 6px 0;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-10px);
-    transition: all 0.25s ease;
+    min-width: 180px;
+    display: none;
+    flex-direction: column;
 }
 
-/* 🔥 Mostrar submenu */
-.menu-item:hover .submenu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-}
-
-/* ===============================
-   🔹 LINKS HIJOS
-================================ */
-.submenu li {
-    list-style: none;
+/* Mostrar submenu */
+.menu-horizontal li:hover .submenu {
+    display: block;
 }
 
 .submenu a {
+    padding: 10px;
     display: block;
-    padding: 10px 15px;
     color: #94a3b8;
     text-decoration: none;
-    transition: all 0.25s ease;
 }
 
-/* 🔥 Hover hijo */
 .submenu a:hover {
     background: #3b82f6;
     color: white;
-    transform: translateX(6px);
 }
-
-/* ===============================
-   🔹 SCROLL BONITO
-================================ */
-.menu::-webkit-scrollbar {
-    width: 6px;
-}
-
-.menu::-webkit-scrollbar-thumb {
-    background: #3b82f6;
-    border-radius: 10px;
-}
-
 /* ===============================
    🔹 CONTENIDO
 ================================ */

@@ -52,15 +52,6 @@ function puedeEditarPermisos() {
 
     return permiso.biteditar || permiso.bitagregar;
 }
-async function cargarLayout() {
 
-    const res = await fetch("layout.html");
-    const html = await res.text();
-
-    document.getElementById("layout").innerHTML = html;
-
-    // 🔥 después de cargar layout → cargar menú
-    await cargarMenu();
-}
 
 window.aplicarPermisosAuto = aplicarPermisosAuto;

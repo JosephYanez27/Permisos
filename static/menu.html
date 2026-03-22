@@ -8,12 +8,20 @@
 
 <body>
 
-<header>
-    <h2>Menú Principal</h2>
-    <button onclick="logout()">Salir</button>
+<!-- 🔹 TOPBAR -->
+<header class="topbar">
+    <div class="left">
+        <h2>Mi Sistema</h2>
+    </div>
+
+    <div class="right">
+        <span id="saludo"></span>
+        <button onclick="logout()">Salir</button>
+    </div>
 </header>
 
-<nav class="menu">
+<!-- 🔹 MENU HORIZONTAL -->
+<nav class="menu-horizontal">
     <ul id="menu-list"></ul>
 </nav>
 
@@ -21,16 +29,21 @@
 <script src="js/fetchAuth.js"></script>
 <script src="js/menu.js"></script>
 
-
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        cargarMenu();
-    });
+document.addEventListener("DOMContentLoaded", async () => {
 
-    function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "login.html";
-    }
+    await aplicarPermisosAuto(); // 🔥 permisos
+    await cargarMenu();          // 🔥 menú
+    mostrarUsuario();            // 🔥 saludo
+
+});
+
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("permisos");
+    window.location.href = "login.html";
+}
 </script>
 
 </body>

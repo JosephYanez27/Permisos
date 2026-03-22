@@ -10,18 +10,14 @@ async function cargarMenu(){
  const data = await res.json();
 
  const menu = document.getElementById("menu-list");
-
  menu.innerHTML = "";
 
  data.forEach(padre => {
 
   let li = document.createElement("li");
-  li.classList.add("menu-item");
 
   li.innerHTML = `
-    <div class="menu-padre">
-        ${padre.nombre}
-    </div>
+    <a href="#">${padre.nombre}</a>
   `;
 
   let ul = document.createElement("ul");
@@ -29,20 +25,23 @@ async function cargarMenu(){
 
   padre.hijos.forEach(hijo => {
 
-    ul.innerHTML += `
-      <li>
-        <a href="${hijo.nombre}.html">
-          ${hijo.nombre}
-        </a>
-      </li>
-    `;
-
+   ul.innerHTML += `
+     <li>
+       <a href="${hijo.nombre}.html">
+         ${hijo.nombre}
+       </a>
+     </li>
+   `;
   });
 
   li.appendChild(ul);
   menu.appendChild(li);
-});
+ });
+}
 
+function mostrarUsuario(){
+    const nombre = localStorage.getItem("usuario") || "Usuario";
+    document.getElementById("saludo").innerText = "Hola, " + nombre;
 }
 async function aplicarPermisosAuto(){
 
@@ -69,6 +68,6 @@ async function cargarLayout() {
 document.addEventListener("DOMContentLoaded", async () => {
 await cargarLayout();
  await  aplicarPermisosAuto();
-
+    mostrarUsuario();
 
 });
