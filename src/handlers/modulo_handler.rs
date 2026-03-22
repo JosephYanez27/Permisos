@@ -103,7 +103,19 @@ let result = sqlx::query_as::<_, Modulo>(
 pub async fn get_modulos(pool: web::Data<PgPool>) -> HttpResponse {
 
     let result = sqlx::query_as::<_, Modulo>(
-        "SELECT id, strnombremodulo, idmodulopadre FROM modulo ORDER BY id"
+        r#"
+        SELECT 
+            m.id,
+            m.strnombremodulo,
+            m.idmodulopadre
+        FROM modulo m
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM modulo hijo
+            WHERE hijo.idmodulopadre = m.id
+        )
+        ORDER BY m.id
+        "#
     )
     .fetch_all(pool.get_ref())
     .await;
@@ -113,7 +125,6 @@ pub async fn get_modulos(pool: web::Data<PgPool>) -> HttpResponse {
         Err(_) => HttpResponse::InternalServerError().body("Error al obtener módulos"),
     }
 }
-
 #[post("/modulo")]
 pub async fn create_modulo(
     pool: web::Data<PgPool>,

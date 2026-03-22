@@ -25,7 +25,7 @@ function renderTabla(){
 
         tabla.innerHTML += `
         <tr>
-            <td>${m.id}</td>
+
             <td>${m.strnombremodulo}</td>
             <td>${m.idmodulopadre ?? "-"}</td>
 
