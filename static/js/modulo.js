@@ -27,7 +27,7 @@ function renderTabla(){
         <tr>
 
             <td>${m.strnombremodulo}</td>
-            <td>${m.idmodulopadre ?? "-"}</td>
+        
 
             <td>
                 <button data-permiso="editar" onclick="editar(${m.id})">
