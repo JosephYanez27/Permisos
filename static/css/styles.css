@@ -50,15 +50,7 @@ header button {
     cursor: pointer;
 }
 
-/* ===============================
-   🔹 MENU SIDEBAR
-================================ */
-/* ===============================
-   🔹 MENU SIDEBAR
-================================ */
-/* ===============================
-   🔹 SIDEBAR
-================================ */
+
 /* 🔹 TOPBAR */
 .topbar {
     display: flex;
@@ -69,18 +61,15 @@ header button {
     padding: 10px 20px;
 }
 
-.topbar .right {
+/* 🔥 IZQUIERDA: TITULO + MENU */
+.topbar .left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 30px;
 }
 
 /* 🔹 MENU HORIZONTAL */
-.menu-horizontal {
-    background: #1e293b;
-}
-
-.menu-horizontal ul {
+.menu-horizontal > ul {
     display: flex;
     list-style: none;
     margin: 0;
@@ -91,20 +80,20 @@ header button {
     position: relative;
 }
 
-/* PADRE */
+/* 🔥 SOLO PADRES VISIBLES */
 .menu-horizontal > ul > li > a {
     display: block;
-    padding: 12px 18px;
+    padding: 10px 15px;
     color: #cbd5f5;
     text-decoration: none;
     font-weight: 600;
 }
 
 .menu-horizontal > ul > li:hover {
-    background: #334155;
+    background: #1e293b;
 }
 
-/* 🔥 SUBMENU */
+/* 🔥 SUBMENU (OCULTO) */
 .submenu {
     position: absolute;
     top: 100%;
@@ -112,17 +101,21 @@ header button {
     background: #1e293b;
     min-width: 180px;
     display: none;
-    flex-direction: column;
 }
 
-/* Mostrar submenu */
+/* 🔥 MOSTRAR AL HOVER */
 .menu-horizontal li:hover .submenu {
     display: block;
 }
 
-.submenu a {
-    padding: 10px;
+/* 🔹 ITEMS HIJOS */
+.submenu li {
     display: block;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px;
     color: #94a3b8;
     text-decoration: none;
 }
