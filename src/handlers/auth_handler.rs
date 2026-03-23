@@ -11,17 +11,17 @@ pub async fn login(
     data: web::Json<LoginRequest>,
 ) -> HttpResponse {
 
-    // 🔐 1️⃣ Validar reCAPTCHA
+    // 🔐 CAPTCHA
     match verify_recaptcha(&data.recaptcha_token).await {
         Ok(true) => {}
         Ok(false) => return HttpResponse::Unauthorized().body("Captcha inválido"),
         Err(_) => return HttpResponse::InternalServerError().body("Error verificando captcha"),
     }
 
-    // 🔎 2️⃣ Buscar usuario
+    // 🔎 QUERY
     let usuario = sqlx::query(
         r#"
-        SELECT u.id, u.strpwd, u.idperfil, e.strdescripcion
+        SELECT u.id, u.strpwd, u.idperfil, u.strnombreusuario, e.strdescripcion
         FROM usuario u
         JOIN estadousuario e ON e.id = u.idestadousuario
         WHERE u.strnombreusuario = $1
@@ -35,34 +35,33 @@ pub async fn login(
         return HttpResponse::InternalServerError().body("Error interno");
     }
 
-    let usuario = usuario.unwrap();
+    let usuario = match usuario.unwrap() {
+        Some(u) => u,
+        None => return HttpResponse::Unauthorized().body("Credenciales inválidas"),
+    };
 
-    if usuario.is_none() {
-        return HttpResponse::Unauthorized().body("Credenciales inválidas");
-    }
+    let id: i32 = usuario.get("id");
+    let hash_guardado: String = usuario.get("strpwd");
+    let idperfil: i32 = usuario.get("idperfil");
+    let nombre: String = usuario.get("strnombreusuario");
+    let estado: String = usuario.get("strdescripcion");
 
-    let row = usuario.unwrap();
-
-    let id: i32 = row.get("id");
-    let hash_guardado: String = row.get("strpwd");
-    let idperfil: i32 = row.get("idperfil");
-    let estado: String = row.get("strdescripcion");
-
-    // 🔑 3️⃣ Verificar password
+    // 🔑 PASSWORD
     if !verify_password(&data.password, &hash_guardado) {
         return HttpResponse::Unauthorized().body("Credenciales inválidas");
     }
 
-    // 🚫 4️⃣ Verificar estado
+    // 🚫 ESTADO
     if estado.to_lowercase() != "activo" {
         return HttpResponse::Unauthorized().body("Usuario inactivo");
     }
-    println!("Usuario login: {}", data.usuario);
-println!("Password login: {}", data.password);
-    // 🎟 5️⃣ Generar JWT
+
+    // 🎟 TOKEN
     let token = generate_jwt(id, idperfil);
 
     HttpResponse::Ok().json(serde_json::json!({
-        "token": token
+        "token": token,
+        "id": id,
+        "usuario": nombre
     }))
 }
