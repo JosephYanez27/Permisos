@@ -39,10 +39,7 @@ async function cargarMenu(){
  });
 }
 
-function mostrarUsuario(){
-    const nombre = localStorage.getItem("usuario") || "Usuario";
-    document.getElementById("saludo").innerText = "Hola, " + nombre;
-}
+
 async function aplicarPermisosAuto(){
 
  const res = await fetchAuth("/mis-permisos");
@@ -67,28 +64,34 @@ async function cargarLayout() {
 async function cargarPerfilHeader() {
 
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-
     if (!usuario) return;
 
-    // 🔹 Saludo
+    // saludo
     document.getElementById("saludo").innerText =
         "Hola, " + usuario.strnombreusuario;
+
+    const img = document.getElementById("foto-user");
 
     try {
 
         const res = await fetchAuth(`/usuario/foto/${usuario.id}`);
 
-        if (!res || !res.ok) return;
+        if (res && res.ok) {
+            const data = await res.json();
 
-        const data = await res.json();
-
-        if (data.strfoto) {
-            document.getElementById("foto-user").src =
-                API_URL.replace("/api", "") + data.strfoto;
+            if (data.strfoto) {
+                img.src = API_URL.replace("/api", "") + data.strfoto;
+                return;
+            }
         }
+
+        // 🔥 fallback
+        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
 
     } catch (e) {
         console.error("Error cargando foto", e);
+
+        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
     }
 }
 function irPerfil() {
