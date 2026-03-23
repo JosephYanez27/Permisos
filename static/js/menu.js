@@ -64,28 +64,33 @@ async function cargarLayout() {
 async function cargarPerfilHeader() {
 
     const usuario = JSON.parse(localStorage.getItem("usuario"));
-
     if (!usuario) return;
 
-    // 🔹 Saludo
-    document.getElementById("saludo").innerText =
-        "Hola, " + usuario.strnombreusuario;
+    const saludo = document.getElementById("saludo");
+    const img = document.getElementById("foto-user");
+
+    // 🔥 si no existe → no hagas nada
+    if (!saludo || !img) return;
+
+    saludo.innerText = "Hola, " + usuario.strnombreusuario;
 
     try {
-
         const res = await fetchAuth(`/usuario/foto/${usuario.id}`);
 
-        if (!res || !res.ok) return;
+        if (res && res.ok) {
+            const data = await res.json();
 
-        const data = await res.json();
-
-        if (data.strfoto) {
-            document.getElementById("foto-user").src =
-                API_URL.replace("/api", "") + data.strfoto;
+            if (data.strfoto) {
+                img.src = API_URL.replace("/api", "") + data.strfoto;
+                return;
+            }
         }
 
-    } catch (e) {
-        console.error("Error cargando foto", e);
+        // fallback
+        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
+
+    } catch {
+        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
     }
 }
 function irPerfil() {
@@ -95,6 +100,6 @@ function irPerfil() {
 document.addEventListener("DOMContentLoaded", async () => {
 await cargarLayout();
  await  aplicarPermisosAuto();
-    cargarPerfilHeader();
+   await cargarPerfilHeader();
 
 });
