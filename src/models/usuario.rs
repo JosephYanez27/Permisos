@@ -16,7 +16,7 @@ pub struct Usuario {
     pub strcorreo: String,
     pub strnumerocelular: Option<String>,
 }
-#[derive(serde::Serialize)]
+#[derive(FromRow,Serialize)]
 pub struct UsuarioFoto {
     pub strnombreusuario: String,
     pub strfoto: Option<String>,

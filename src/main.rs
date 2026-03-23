@@ -5,7 +5,6 @@ use dotenv::dotenv;
 use std::env;
 use bcrypt::{hash, DEFAULT_COST};
 use sqlx::Row;
-use actix_files::Files;
 mod db;
 mod middleware;
 mod handlers;
@@ -232,12 +231,13 @@ async fn main() -> std::io::Result<()> {
                     .service(principal2_1)
                     .service(principal2_2)
             )
+            .service(Files::new("/uploads", "./uploads").show_files_listing())
               // 📁 STATIC
             .service(
                 Files::new("/", "./static")
                     .index_file("login.html")
             )
-            .service(Files::new("/uploads", "./uploads").show_files_listing())
+            
     })
     .bind(("0.0.0.0", port))?
     .run()
