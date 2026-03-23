@@ -58,6 +58,10 @@ async function login() {
    // 🔹 Guardar token
 localStorage.setItem("token", data.token);
 localStorage.setItem("usuario",usuario);
+localStorage.setItem("usuario", JSON.stringify({
+    id: data.id,
+    strnombreusuario: data.usuario
+}));
 // 🔥 OBTENER PERMISOS DESPUÉS DEL LOGIN
 const resPermisos = await fetch(`${API_URL}/mis-permisos`, {
     headers: {

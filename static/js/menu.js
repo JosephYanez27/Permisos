@@ -64,10 +64,40 @@ async function cargarLayout() {
     // 🔥 después de cargar layout → cargar menú
     await cargarMenu();
 }
+async function cargarPerfilHeader() {
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    if (!usuario) return;
+
+    // 🔹 Saludo
+    document.getElementById("saludo").innerText =
+        "Hola, " + usuario.strnombreusuario;
+
+    try {
+
+        const res = await fetchAuth(`/usuario/foto/${usuario.id}`);
+
+        if (!res || !res.ok) return;
+
+        const data = await res.json();
+
+        if (data.strfoto) {
+            document.getElementById("foto-user").src =
+                API_URL.replace("/api", "") + data.strfoto;
+        }
+
+    } catch (e) {
+        console.error("Error cargando foto", e);
+    }
+}
+function irPerfil() {
+    window.location.href = "img.html";
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
 await cargarLayout();
  await  aplicarPermisosAuto();
-    mostrarUsuario();
+    cargarPerfilHeader();
 
 });
