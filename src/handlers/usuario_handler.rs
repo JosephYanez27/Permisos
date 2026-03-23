@@ -1,10 +1,11 @@
 use actix_web::{get, post, put, delete, web, HttpResponse};
 use sqlx::PgPool;
-
+use actix_multipart::Multipart;
+use futures_util::StreamExt;
 use bcrypt::{hash, DEFAULT_COST};
-use crate::models::usuario::{Usuario, CrearUsuario,UsuarioQuery,UsuarioResponse,UsuarioDetalle};
+use crate::models::usuario::{Usuario, CrearUsuario,UsuarioQuery,UsuarioResponse,UsuarioDetalle,UsuarioFoto};
 use crate::utils::email::enviar_credenciales;
-
+use std::io::Write;
 
 
 #[get("/usuario")]
@@ -278,4 +279,116 @@ pub async fn delete_usuario(
         Err(_) => HttpResponse::InternalServerError().body("Error al eliminar usuario"),
     }
 }
+#[get("/usuario/foto/{id}")]
+pub async fn get_usuario_foto(
+    pool: web::Data<PgPool>,
+    path: web::Path<i32>,
+) -> HttpResponse {
 
+    let id = path.into_inner();
+
+    let result = sqlx::query_as::<_, UsuarioFoto>(
+        r#"
+        SELECT strnombreusuario, strfoto
+        FROM usuario
+        WHERE id = $1
+        "#
+    )
+    .bind(id)
+    .fetch_one(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(data) => HttpResponse::Ok().json(data),
+        Err(_) => HttpResponse::NotFound().body("Usuario no encontrado"),
+    }
+}
+#[post("/usuario/upload-foto/{id}")]
+pub async fn upload_foto(
+    pool: web::Data<PgPool>,
+    path: web::Path<i32>,
+    mut payload: Multipart,
+) -> HttpResponse {
+
+    let id = path.into_inner();
+    let mut filepath = String::new();
+
+    while let Some(item) = payload.next().await {
+
+        let mut field = match item {
+            Ok(f) => f,
+            Err(_) => return HttpResponse::BadRequest().body("Error leyendo archivo"),
+        };
+
+        // 🔥 VALIDAR CONTENT TYPE (MIME)
+        let content_type = field.content_type().to_string();
+
+        if !content_type.starts_with("image/") {
+            return HttpResponse::BadRequest().body("Solo se permiten imágenes");
+        }
+
+        // 🔥 VALIDAR EXTENSIÓN
+        let cd = field.content_disposition();
+        let filename_original = cd
+            .get_filename()
+            .unwrap_or("file");
+
+        let extension = filename_original
+            .split('.')
+            .last()
+            .unwrap_or("")
+            .to_lowercase();
+
+        let extensiones_validas = ["jpg", "jpeg", "png", "webp"];
+
+        if !extensiones_validas.contains(&extension.as_str()) {
+            return HttpResponse::BadRequest()
+                .body("Formato no permitido (jpg, png, webp)");
+        }
+
+        // 🔥 GENERAR NOMBRE SEGURO
+        let filename = format!("foto_{}.{}", id, extension);
+        let path = format!("./uploads/{}", filename);
+
+        let mut file = match std::fs::File::create(&path) {
+            Ok(f) => f,
+            Err(_) => return HttpResponse::InternalServerError().body("Error creando archivo"),
+        };
+
+        // 🔥 VALIDAR TAMAÑO (máx 2MB)
+        let mut size: usize = 0;
+        let max_size = 2 * 1024 * 1024;
+
+        while let Some(chunk) = field.next().await {
+
+            let data = match chunk {
+                Ok(d) => d,
+                Err(_) => return HttpResponse::BadRequest().body("Error leyendo chunk"),
+            };
+
+            size += data.len();
+
+            if size > max_size {
+                return HttpResponse::BadRequest()
+                    .body("Imagen demasiado grande (máx 2MB)");
+            }
+
+            if file.write_all(&data).is_err() {
+                return HttpResponse::InternalServerError().body("Error guardando archivo");
+            }
+        }
+
+        filepath = format!("/uploads/{}", filename);
+    }
+
+    // 🔥 GUARDAR EN BD
+    let _ = sqlx::query(
+        "UPDATE usuario SET strfoto = $1 WHERE id = $2"
+    )
+    .bind(&filepath)
+    .bind(id)
+    .execute(pool.get_ref())
+    .await;
+
+    HttpResponse::Ok().body("Imagen subida correctamente")
+}

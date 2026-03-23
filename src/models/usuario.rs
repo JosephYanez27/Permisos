@@ -16,7 +16,11 @@ pub struct Usuario {
     pub strcorreo: String,
     pub strnumerocelular: Option<String>,
 }
-
+#[derive(serde::Serialize)]
+pub struct UsuarioFoto {
+    pub strnombreusuario: String,
+    pub strfoto: Option<String>,
+}
 #[derive(Deserialize,FromRow)]
 pub struct CrearUsuario {
     pub strnombreusuario: String,

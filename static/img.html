@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Perfil Usuario</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body data-modulo="usuario">
+
+<div id="layout"></div>
+
+<div class="perfil-container">
+
+    <div class="perfil-card">
+
+        <h2>Mi Perfil</h2>
+
+        <div class="foto-section">
+            <img id="img" src="https://via.placeholder.com/120" alt="Foto usuario">
+        </div>
+
+        <h3 id="nombre">Cargando...</h3>
+
+        <div class="upload-section">
+            <input type="file" id="foto" accept="image/*">
+            <button onclick="subirFoto()">Subir imagen</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/fetchAuth.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/authPermisos.js"></script>
+<script src="js/usuario.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    await cargarLayout();
+    await cargarPerfil();
+});
+</script>
+
+</body>
+</html>

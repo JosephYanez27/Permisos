@@ -435,6 +435,77 @@ function irFinal(){
  buscarUsuarios();
 }
 
+async function subirFoto() {
+
+    const fileInput = document.getElementById("foto");
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Selecciona una imagen");
+        return;
+    }
+
+    // 🔥 VALIDAR TIPO MIME
+    if (!file.type.startsWith("image/")) {
+        alert("Solo se permiten imágenes");
+        fileInput.value = "";
+        return;
+    }
+
+    // 🔥 VALIDAR EXTENSIÓN (extra seguridad)
+    const extensionesValidas = ["jpg", "jpeg", "png", "webp"];
+    const extension = file.name.split(".").pop().toLowerCase();
+
+    if (!extensionesValidas.includes(extension)) {
+        alert("Formato no permitido. Usa JPG, PNG o WEBP");
+        fileInput.value = "";
+        return;
+    }
+
+    // 🔥 VALIDAR TAMAÑO (ejemplo: 2MB)
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+        alert("La imagen es demasiado grande (máx 2MB)");
+        fileInput.value = "";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+const idUsuario = usuario?.id; // 🔥 dinámico
+
+    const res = await fetchAuth(`/usuario/upload-foto/${idUsuario}`, {
+        method: "POST",
+        body: formData
+    });
+
+    alert(await res.text());
+}
+async function cargarFoto() {
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+const id = usuario?.id; // 🔥 luego lo haces dinámico
+
+    const res = await fetchAuth(`/usuario/foto/${id}`);
+
+    if (!res || !res.ok) {
+        console.error("Error cargando foto");
+        return;
+    }
+
+    const data = await res.json();
+
+    document.getElementById("nombre").innerText = data.strnombreusuario;
+
+    if (data.strfoto) {
+        document.getElementById("img").src = API_URL.replace("/api", "") + data.strfoto;
+    } else {
+        document.getElementById("img").src = "https://via.placeholder.com/120";
+    }
+}
+
 
 // 🔹 Exponer funciones
 window.buscarUsuarios = buscarUsuarios;
