@@ -64,34 +64,28 @@ async function cargarLayout() {
 async function cargarPerfilHeader() {
 
     const usuario = JSON.parse(localStorage.getItem("usuario"));
+
     if (!usuario) return;
 
-    // saludo
+    // 🔹 Saludo
     document.getElementById("saludo").innerText =
         "Hola, " + usuario.strnombreusuario;
-
-    const img = document.getElementById("foto-user");
 
     try {
 
         const res = await fetchAuth(`/usuario/foto/${usuario.id}`);
 
-        if (res && res.ok) {
-            const data = await res.json();
+        if (!res || !res.ok) return;
 
-            if (data.strfoto) {
-                img.src = API_URL.replace("/api", "") + data.strfoto;
-                return;
-            }
+        const data = await res.json();
+
+        if (data.strfoto) {
+            document.getElementById("foto-user").src =
+                API_URL.replace("/api", "") + data.strfoto;
         }
-
-        // 🔥 fallback
-        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
 
     } catch (e) {
         console.error("Error cargando foto", e);
-
-        img.src = `https://ui-avatars.com/api/?name=${usuario.strnombreusuario}`;
     }
 }
 function irPerfil() {
