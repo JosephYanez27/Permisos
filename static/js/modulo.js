@@ -1,7 +1,8 @@
 let modulos = [];
 let idEditar = null;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",async () => {
+    await aplicarPermisosAuto()
     cargarModulos();
 });
 
