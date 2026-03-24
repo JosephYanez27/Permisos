@@ -1,5 +1,3 @@
-
-
 async function fetchAuth(url, options = {}) {
 
     const token = localStorage.getItem("token");
@@ -9,17 +7,19 @@ async function fetchAuth(url, options = {}) {
     }
 
     options.headers["Authorization"] = `Bearer ${token}`;
-    options.headers["Content-Type"] = "application/json";
+
+    // 🔥 SOLO poner Content-Type si NO es FormData
+    if (!(options.body instanceof FormData)) {
+        options.headers["Content-Type"] = "application/json";
+    }
 
     const response = await fetch(API_URL + url, options);
 
     // 🔴 TOKEN EXPIRADO
     if (response.status === 401) {
-
         console.log("Token expirado");
 
         localStorage.removeItem("token");
-
         window.location.href = "login.html";
 
         return null;
@@ -27,4 +27,5 @@ async function fetchAuth(url, options = {}) {
 
     return response;
 }
+
 window.fetchAuth = fetchAuth;
