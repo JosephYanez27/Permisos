@@ -419,3 +419,75 @@ input:disabled + .slider {
     color: white;
     font-weight: 500;
 }
+.usuario-form {
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    border-radius: 12px;
+    background: #1e1e2f;
+    color: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.usuario-form h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    background: #2c2c3e;
+    color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border: 1px solid #4cafef;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn-guardar {
+    background: #4caf50;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-cancelar {
+    background: #e53935;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-guardar:hover {
+    background: #43a047;
+}
+
+.btn-cancelar:hover {
+    background: #d32f2f;
+}

@@ -70,34 +70,49 @@
 
 
 <div class="paginacion" id="paginacion"></div>
-<div id="modalUsuario" class="modal">
+<div class="modal-content usuario-form">
 
-<div class="modal-content">
+    <span onclick="cerrarModal()" class="close">&times;</span>
 
-<span onclick="cerrarModal()" class="close">&times;</span>
-<label>Nombre:</label>
-<input id="usuario">
+    <h2>Usuario</h2>
 
-<label>Correo:</label>
-<input id="correo">
+    <div class="form-group">
+        <label>Nombre</label>
+        <input id="usuario" maxlength="30" autocomplete="off">
+    </div>
 
-<label>Celular:</label>
-<input id="celular">
+    <div class="form-group">
+        <label>Correo</label>
+        <input id="correo" type="email" maxlength="50">
+    </div>
 
-<label>Perfil:</label>
-<select id="perfil"></select>
+    <div class="form-group">
+        <label>Celular</label>
+        <input id="celular" maxlength="15">
+    </div>
 
-<label>Estado:</label>
-<select id="estado">
-<option value="1">Activo</option>
-<option value="2">Inactivo</option>
-</select>
+    <div class="form-group">
+        <label>Perfil</label>
+        <select id="perfil"></select>
+    </div>
 
-<label>Contraseña:</label>
-<input type="password" id="password">
+    <div class="form-group">
+        <label>Estado</label>
+        <select id="estado">
+            <option value="1">Activo</option>
+            <option value="2">Inactivo</option>
+        </select>
+    </div>
 
-<button onclick="guardarUsuario()">Guardar</button>
-<button onclick="cerrarModal()">Cancelar</button>
+    <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="password" maxlength="50">
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-guardar" onclick="guardarUsuario()">Guardar</button>
+        <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+    </div>
 
 </div>
 </div>

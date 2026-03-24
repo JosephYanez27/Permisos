@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// 🔹 Función Login
 async function login() {
 
     const usuario = document.getElementById("usuario").value.trim();
@@ -16,6 +15,9 @@ async function login() {
         alert("Todos los campos son obligatorios");
         return;
     }
+
+    // 🔥 AQUÍ VA
+    if (!validarLogin()) return;
 
     // 🔐 Obtener token reCAPTCHA
     const recaptcha_token = grecaptcha.getResponse();
@@ -55,35 +57,60 @@ async function login() {
             return;
         }
 
-   // 🔹 Guardar token
-localStorage.setItem("token", data.token);
-localStorage.setItem("usuario",usuario);
-localStorage.setItem("usuario", JSON.stringify({
-    id: data.id,
-    strnombreusuario: data.usuario
-}));
-// 🔥 OBTENER PERMISOS DESPUÉS DEL LOGIN
-const resPermisos = await fetch(`${API_URL}/mis-permisos`, {
-    headers: {
-        "Authorization": "Bearer " + data.token
-    }
-});
+        // 🔹 Guardar token
+        localStorage.setItem("token", data.token);
 
-if (!resPermisos.ok) {
-    alert("Error obteniendo permisos");
-    return;
-}
+        localStorage.setItem("usuario", JSON.stringify({
+            id: data.id,
+            strnombreusuario: data.usuario
+        }));
 
-const permisos = await resPermisos.json();
+        // 🔥 PERMISOS
+        const resPermisos = await fetch(`${API_URL}/mis-permisos`, {
+            headers: {
+                "Authorization": "Bearer " + data.token
+            }
+        });
 
-// 🔥 GUARDAR PERMISOS
-localStorage.setItem("permisos", JSON.stringify(permisos));
+        if (!resPermisos.ok) {
+            alert("Error obteniendo permisos");
+            return;
+        }
 
-// 🔹 Redirigir
-window.location.href = "menu.html";
+        const permisos = await resPermisos.json();
+
+        localStorage.setItem("permisos", JSON.stringify(permisos));
+
+        window.location.href = "menu.html";
 
     } catch (error) {
         console.error("Error:", error);
         alert("Error de conexión con el servidor");
     }
+}
+
+function validarLogin() {
+
+    const usuario = document.getElementById("usuario").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (usuario.length < 3 || usuario.length > 20) {
+        alert("El usuario debe tener entre 3 y 20 caracteres");
+        return false;
+    }
+
+    if (password.length < 6 || password.length > 30) {
+        alert("La contraseña debe tener entre 6 y 30 caracteres");
+        return false;
+    }
+
+    // 🔥 evitar caracteres peligrosos básicos
+    const regex = /^[a-zA-Z0-9_@.]+$/;
+
+    if (!regex.test(usuario)) {
+        alert("Usuario inválido");
+        return false;
+    }
+
+    return true;
 }

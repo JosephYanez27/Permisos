@@ -207,29 +207,34 @@ async function guardarUsuario() {
 
     const usuarioData = {
 
-        strnombreusuario: document.getElementById("usuario").value,
+        strnombreusuario: document.getElementById("usuario").value.trim(),
 
         idperfil: parseInt(
             document.getElementById("perfil").value
         ),
 
-        strcorreo: document.getElementById("correo").value,
+        strcorreo: document.getElementById("correo").value.trim(),
 
-        strnumerocelular: document.getElementById("celular").value,
+        strnumerocelular: document.getElementById("celular").value.trim(),
 
         idestadousuario: parseInt(
             document.getElementById("estado").value
         )
     };
 
+    const esEdicion = !!idUsuarioEdicion;
+
     // 🔹 Solo enviar contraseña cuando es creación
-    if (!idUsuarioEdicion) {
+    if (!esEdicion) {
         usuarioData.strpwd = password;
     }
 
-    const metodo = idUsuarioEdicion ? "PUT" : "POST";
+    // 🔐 VALIDAR AQUÍ
+    if (!validarUsuario(usuarioData, esEdicion)) return;
 
-    const endpoint = idUsuarioEdicion
+    const metodo = esEdicion ? "PUT" : "POST";
+
+    const endpoint = esEdicion
         ? `/usuario/${idUsuarioEdicion}`
         : "/usuario";
 
@@ -243,7 +248,7 @@ async function guardarUsuario() {
     if (response && response.ok) {
 
         alert(
-            idUsuarioEdicion
+            esEdicion
                 ? "Usuario actualizado"
                 : "Usuario creado"
         );
@@ -261,12 +266,19 @@ async function guardarUsuario() {
 // 🔹 Editar
 async function editar(id) {
 
+    // 🔐 Validar ID
+    if (!id || isNaN(id)) {
+        alert("ID inválido");
+        return;
+    }
+
     idUsuarioEdicion = id;
 
     const response = await fetchAuth(`/usuario/${id}`);
 
     if (!response || !response.ok) {
         console.error("Error cargando usuario");
+        alert("No se pudo cargar el usuario");
         return;
     }
 
@@ -274,23 +286,29 @@ async function editar(id) {
 
     console.log("Usuario recibido:", u);
 
+    // 🔐 Validar datos antes de asignar
     document.getElementById("usuario").value =
-        u.strnombreusuario;
+        (u.strnombreusuario || "").replace(/[<>]/g, "");
 
     document.getElementById("correo").value =
-        u.strcorreo;
+        (u.strcorreo || "").replace(/[<>]/g, "");
 
     document.getElementById("celular").value =
-        u.strnumerocelular || "";
+        (u.strnumerocelular || "").replace(/[^\d]/g, "");
 
     document.getElementById("perfil").value =
-        u.idperfil;
+        u.idperfil || "";
 
     document.getElementById("estado").value =
-        u.idestadousuario;
+        u.idestadousuario || "";
 
-    document.getElementById("password").value = ""; // limpiar password
-    document.getElementById("password").disabled = true;
+    // 🔒 Password comportamiento correcto
+    const inputPassword = document.getElementById("password");
+    inputPassword.value = "";
+    inputPassword.disabled = true;
+    inputPassword.placeholder = "******** (no editable)";
+
+    // 🔥 Mostrar modal
     document.getElementById("modalUsuario").style.display = "block";
 }
 fetch("/menu.html")
@@ -298,7 +316,46 @@ fetch("/menu.html")
 .then(html => {
     document.getElementById("menu").innerHTML = html;
 });
+function validarUsuario(data, esEdicion = false) {
 
+    // 🔹 Nombre
+    if (!data.strnombreusuario || data.strnombreusuario.length < 3 || data.strnombreusuario.length > 30) {
+        alert("El usuario debe tener entre 3 y 30 caracteres");
+        return false;
+    }
+
+    const nombreRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!nombreRegex.test(data.strnombreusuario)) {
+        alert("El nombre contiene caracteres inválidos");
+        return false;
+    }
+
+    // 🔹 Correo
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correoRegex.test(data.strcorreo)) {
+        alert("Correo inválido");
+        return false;
+    }
+
+    // 🔹 Celular (opcional pero validado)
+    if (data.strnumerocelular) {
+        const celularRegex = /^[0-9]{10,15}$/;
+        if (!celularRegex.test(data.strnumerocelular)) {
+            alert("Celular inválido (solo números 10-15 dígitos)");
+            return false;
+        }
+    }
+
+    // 🔹 Password solo en creación
+    if (!esEdicion) {
+        if (!data.strpwd || data.strpwd.length < 6) {
+            alert("La contraseña debe tener mínimo 6 caracteres");
+            return false;
+        }
+    }
+
+    return true;
+}
 async function cargarPerfiles() {
 
     try {
