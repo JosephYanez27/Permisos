@@ -212,7 +212,7 @@ async fn main() -> std::io::Result<()> {
                     .service(update_usuario)
                     .service(delete_usuario)
                     .service(upload_foto)
-                    .service(get_usuario_foto) 
+                    .service(get_foto) 
                     .service(get_menu)
                    .service(get_modulos)
                      .service(create_modulo)
