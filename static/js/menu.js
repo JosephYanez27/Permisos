@@ -101,5 +101,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 await cargarLayout();
  await  aplicarPermisosAuto();
    await cargarPerfilHeader();
-
+   await cargarFoto();
 });
