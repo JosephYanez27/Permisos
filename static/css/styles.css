@@ -491,3 +491,105 @@ input:disabled + .slider {
 .btn-cancelar:hover {
     background: #d32f2f;
 }
+.filtros-usuario {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    background: #1e1e2f;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.filtros-usuario label {
+    color: #ccc;
+    font-size: 12px;
+}
+
+.filtros-usuario input,
+.filtros-usuario select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    margin-top: 5px;
+}
+
+.acciones-filtro {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+}
+
+.acciones-filtro button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #4cafef;
+    color: white;
+}
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #1e1e2f;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabla-usuarios th {
+    background: #29293d;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabla-usuarios td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    color: #ddd;
+}
+
+.tabla-usuarios tr:hover {
+    background: #2a2a40;
+}
+
+.tabla-usuarios button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.tabla-usuarios button[data-permiso="editar"] {
+    background: #ffc107;
+}
+
+.tabla-usuarios button[data-permiso="eliminar"] {
+    background: #f44336;
+    color: white;
+}
+.paginacion {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.paginacion button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #333;
+    color: white;
+}
+
+.paginacion button:hover {
+    background: #4cafef;
+}
+
+.paginacion button.activo {
+    background: #4cafef;
+}
