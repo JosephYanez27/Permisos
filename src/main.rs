@@ -12,6 +12,8 @@ mod utils;
 mod models;
 
 use db::connect_db;
+use std::fs;
+
 
 use middleware::jwt_middleware::JwtMiddleware;
 use middleware::permission_middleware::PermissionMiddleware;
@@ -173,7 +175,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Puerto inválido");
 
     println!("🚀 Servidor iniciado en puerto {}", port);
-
+ fs::create_dir_all("./uploads").expect("No se pudo crear carpeta uploads");
     HttpServer::new(move || {
 
         let cors = Cors::default()
@@ -209,7 +211,8 @@ async fn main() -> std::io::Result<()> {
                     .service(create_usuario)
                     .service(update_usuario)
                     .service(delete_usuario)
-
+                    .service(upload_foto)
+                    .service(get_usuario_foto) 
                     .service(get_menu)
                    .service(get_modulos)
                      .service(create_modulo)
