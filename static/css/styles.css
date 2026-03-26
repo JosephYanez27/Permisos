@@ -424,14 +424,15 @@ input:disabled + .slider {
     max-width: 90%;
     padding: 20px;
     border-radius: 12px;
-    background: #1e1e2f;
-    color: #fff;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    background: #ffffff;
+    color: #333;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 .usuario-form h2 {
     text-align: center;
     margin-bottom: 15px;
+    color: #2c3e50;
 }
 
 .form-group {
@@ -442,22 +443,26 @@ input:disabled + .slider {
 
 .form-group label {
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 13px;
+    color: #555;
 }
 
 .form-group input,
 .form-group select {
-    padding: 8px;
+    padding: 9px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid #ddd;
     outline: none;
-    background: #2c2c3e;
-    color: #fff;
+    background: #f9fafc;
+    color: #333;
+    transition: 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     border: 1px solid #4cafef;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(76,175,239,0.3);
 }
 
 .form-actions {
@@ -467,42 +472,46 @@ input:disabled + .slider {
 }
 
 .btn-guardar {
-    background: #4caf50;
+    background: linear-gradient(135deg, #4cafef, #2196f3);
     border: none;
-    padding: 8px 15px;
+    padding: 9px 15px;
     border-radius: 6px;
     color: white;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .btn-cancelar {
-    background: #e53935;
+    background: #e0e0e0;
     border: none;
-    padding: 8px 15px;
+    padding: 9px 15px;
     border-radius: 6px;
-    color: white;
+    color: #333;
     cursor: pointer;
 }
 
 .btn-guardar:hover {
-    background: #43a047;
+    transform: scale(1.05);
 }
 
 .btn-cancelar:hover {
-    background: #d32f2f;
+    background: #d5d5d5;
 }
+
+/* 🔹 FILTROS */
 .filtros-usuario {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
-    background: #1e1e2f;
+    background: #ffffff;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .filtros-usuario label {
-    color: #ccc;
+    color: #666;
     font-size: 12px;
 }
 
@@ -511,8 +520,9 @@ input:disabled + .slider {
     width: 100%;
     padding: 8px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid #ddd;
     margin-top: 5px;
+    background: #f9fafc;
 }
 
 .acciones-filtro {
@@ -528,31 +538,39 @@ input:disabled + .slider {
     cursor: pointer;
     background: #4cafef;
     color: white;
+    transition: 0.2s;
 }
+
+.acciones-filtro button:hover {
+    background: #2196f3;
+}
+
+/* 🔹 TABLA */
 .tabla-usuarios {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
-    background: #1e1e2f;
+    background: #ffffff;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .tabla-usuarios th {
-    background: #29293d;
+    background: #4cafef;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     text-align: left;
 }
 
 .tabla-usuarios td {
     padding: 10px;
-    border-bottom: 1px solid #333;
-    color: #ddd;
+    border-bottom: 1px solid #eee;
+    color: #444;
 }
 
 .tabla-usuarios tr:hover {
-    background: #2a2a40;
+    background: #f5faff;
 }
 
 .tabla-usuarios button {
@@ -564,12 +582,15 @@ input:disabled + .slider {
 
 .tabla-usuarios button[data-permiso="editar"] {
     background: #ffc107;
+    color: #333;
 }
 
 .tabla-usuarios button[data-permiso="eliminar"] {
     background: #f44336;
     color: white;
 }
+
+/* 🔹 PAGINACIÓN */
 .paginacion {
     margin-top: 15px;
     display: flex;
@@ -579,17 +600,20 @@ input:disabled + .slider {
 
 .paginacion button {
     padding: 6px 10px;
-    border: none;
+    border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
-    background: #333;
-    color: white;
+    background: #fff;
+    color: #333;
+    transition: 0.2s;
 }
 
 .paginacion button:hover {
     background: #4cafef;
+    color: white;
 }
 
 .paginacion button.activo {
     background: #4cafef;
+    color: white;
 }
