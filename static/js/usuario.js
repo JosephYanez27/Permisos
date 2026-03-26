@@ -275,77 +275,44 @@ async function guardarUsuario() {
 }
 
 // 🔹 Editar
-async function guardarUsuario() {
+async function editar(id) {
 
-    const btn = document.querySelector(".btn-guardar");
-    btn.disabled = true;
-
-    const password = document.getElementById("password").value;
-
-    const usuarioData = {
-
-        strnombreusuario: document.getElementById("usuario").value.trim(),
-
-        idperfil: parseInt(document.getElementById("perfil").value),
-
-        strcorreo: document.getElementById("correo").value.trim(),
-
-        strnumerocelular: document.getElementById("celular").value.trim(),
-
-        idestadousuario: parseInt(document.getElementById("estado").value)
-    };
-
-    const esEdicion = !!idUsuarioEdicion;
-
-    if (!esEdicion) {
-        usuarioData.strpwd = password;
-    }
-
-    if (!validarUsuario(usuarioData, esEdicion)) {
-        btn.disabled = false;
+    if (!id || isNaN(id)) {
+        mostrarMensaje("⚠️ ID inválido", "warning");
         return;
     }
 
-    const metodo = esEdicion ? "PUT" : "POST";
-    const endpoint = esEdicion
-        ? `/usuario/${idUsuarioEdicion}`
-        : "/usuario";
+    idUsuarioEdicion = id;
 
-    try {
+    const response = await fetchAuth(`/usuario/${id}`);
 
-        const response = await fetchAuth(endpoint, {
-            method: metodo,
-            body: JSON.stringify(usuarioData)
-        });
-
-        if (response && response.ok) {
-
-            mostrarMensaje(
-                esEdicion
-                    ? "✅ Usuario actualizado correctamente"
-                    : "✅ Usuario creado correctamente",
-                "success"
-            );
-
-            cerrarModal();
-
-            // 🔥 RECARGA CON RETARDO
-            setTimeout(() => {
-                location.reload();
-            }, 1200);
-
-        } else {
-
-            const error = await response.text();
-            mostrarMensaje("❌ Error: " + error, "error");
-
-        }
-
-    } catch (e) {
-        mostrarMensaje("❌ Error de conexión", "error");
+    if (!response || !response.ok) {
+        mostrarMensaje("❌ No se pudo cargar el usuario", "error");
+        return;
     }
 
-    btn.disabled = false;
+    const u = await response.json();
+
+    document.getElementById("usuario").value =
+        (u.strnombreusuario || "").replace(/[<>]/g, "");
+
+    document.getElementById("correo").value =
+        (u.strcorreo || "").replace(/[<>]/g, "");
+
+    document.getElementById("celular").value =
+        (u.strnumerocelular || "").replace(/[^\d]/g, "");
+
+    document.getElementById("perfil").value = u.idperfil || "";
+    document.getElementById("estado").value = u.idestadousuario || "";
+
+    const inputPassword = document.getElementById("password");
+    inputPassword.value = "";
+    inputPassword.disabled = true;
+    inputPassword.placeholder = "******** (no editable)";
+
+    document.getElementById("modalUsuario").style.display = "block";
+
+    mostrarMensaje("✏️ Editando usuario", "info");
 }
 fetch("/menu.html")
 .then(res => res.text())
