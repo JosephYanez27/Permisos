@@ -244,16 +244,21 @@ async function guardarUsuario() {
             body: JSON.stringify(usuarioData)
         });
 
-        if (response && response.ok) {
+     if (response && response.ok) {
 
-            mostrarMensaje(
-                esEdicion
-                    ? "✅ Usuario actualizado correctamente"
-                    : "✅ Usuario creado correctamente",
-                "success"
-            );
+    mostrarMensaje(
+        esEdicion
+            ? "✅ Usuario actualizado correctamente"
+            : "✅ Usuario creado correctamente",
+        "success"
+    );
 
-            cerrarModal();
+    cerrarModal();
+
+    // 🔥 ACTUALIZAR TABLA SIN RECARGAR
+    await buscarUsuarios();
+
+
 
             // 🔥 RECARGA CON RETARDO
             setTimeout(() => {
