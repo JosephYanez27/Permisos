@@ -171,16 +171,19 @@ pub async fn create_usuario(
         Ok(_) => {
 
             // 🔹 Enviar correo
-            let _ = enviar_credenciales(
-                &data.strcorreo,
-                &data.strnombreusuario,
-                &plain_password
-            );
+            //let _ = enviar_credenciales(
+            //    &data.strcorreo,
+             //   &data.strnombreusuario,
+              //  &plain_password
+            //);
 
             HttpResponse::Ok().body("Usuario creado y correo enviado")
         }
 
-        Err(_) => HttpResponse::InternalServerError().body("Error creando usuario"),
+      Err(e) => {
+    println!("ERROR SQL: {:?}", e);
+    HttpResponse::InternalServerError().body(format!("Error creando usuario: {:?}", e))
+}
     }
 }
 
