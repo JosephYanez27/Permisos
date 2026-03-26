@@ -617,3 +617,30 @@ input:disabled + .slider {
     background: #4cafef;
     color: white;
 }
+.mensaje {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 9999;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.mensaje.success {
+    background: #4caf50;
+}
+
+.mensaje.error {
+    background: #e53935;
+}
+
+.mensaje.warning {
+    background: #ff9800;
+}
+
+.mensaje.info {
+    background: #2196f3;
+}

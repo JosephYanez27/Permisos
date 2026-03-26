@@ -224,7 +224,10 @@ async function guardarUsuario() {
             usuarioData.strpwd = password;
         }
 
-        if (!validarUsuario(usuarioData, esEdicion)) return;
+        if (!validarUsuario(usuarioData, esEdicion)) {
+            btn.disabled = false;
+            return;
+        }
 
         const metodo = esEdicion ? "PUT" : "POST";
         const endpoint = esEdicion
@@ -236,7 +239,7 @@ async function guardarUsuario() {
             body: JSON.stringify(usuarioData)
         });
 
-        if (response.ok) {
+        if (response && response.ok) {
 
             mostrarMensaje(
                 esEdicion
@@ -246,7 +249,14 @@ async function guardarUsuario() {
             );
 
             cerrarModal();
+
+            // 🔥 ACTUALIZA TABLA SIN RECARGAR
             await buscarUsuarios();
+
+            // 🔥 OPCIONAL: recarga real
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
 
         } else {
 
@@ -258,7 +268,7 @@ async function guardarUsuario() {
     } catch (e) {
 
         console.error(e);
-        mostrarMensaje("❌ Error real: " + e.message, "error");
+        mostrarMensaje("❌ Error: " + e.message, "error");
 
     } finally {
 
@@ -305,6 +315,26 @@ async function editar(id) {
     document.getElementById("modalUsuario").style.display = "block";
 
     mostrarMensaje("✏️ Editando usuario", "info");
+}
+function mostrarMensaje(texto, tipo = "info") {
+
+    let div = document.getElementById("mensaje-global");
+
+    if (!div) {
+        div = document.createElement("div");
+        div.id = "mensaje-global";
+        document.body.appendChild(div);
+    }
+
+    div.innerText = texto;
+
+    div.className = "mensaje " + tipo;
+
+    div.style.display = "block";
+
+    setTimeout(() => {
+        div.style.display = "none";
+    }, 2500);
 }
 fetch("/menu.html")
 .then(res => res.text())
