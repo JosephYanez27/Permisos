@@ -251,7 +251,7 @@ async function guardarUsuario() {
             cerrarModal();
 
             // 🔥 ACTUALIZA TABLA SIN RECARGAR
-             buscarUsuarios();
+            await buscarUsuarios();
 
             // 🔥 OPCIONAL: recarga real
             setTimeout(() => {
