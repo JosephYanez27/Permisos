@@ -5,7 +5,98 @@
 <title>Gestión de Registros</title>
 
 <style>
+header {
+    background: var(--sidebar);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+header button {
+    background: var(--danger);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* 🔹 TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f172a;
+    color: white;
+    padding: 10px 20px;
+}
+
+/* 🔥 IZQUIERDA: TITULO + MENU */
+.topbar .left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* 🔹 MENU HORIZONTAL */
+.menu-horizontal > ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-horizontal li {
+    position: relative;
+}
+
+/* 🔥 SOLO PADRES VISIBLES */
+.menu-horizontal > ul > li > a {
+    display: block;
+    padding: 10px 15px;
+    color: #cbd5f5;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.menu-horizontal > ul > li:hover {
+    background: #1e293b;
+}
+
+/* 🔥 SUBMENU (OCULTO) */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1e293b;
+    min-width: 180px;
+    display: none;
+}
+
+/* 🔥 MOSTRAR AL HOVER */
+.menu-horizontal li:hover .submenu {
+    display: block;
+}
+
+/* 🔹 ITEMS HIJOS */
+.submenu li {
+    display: block;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px;
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.submenu a:hover {
+    background: #3b82f6;
+    color: white;
+}
 body {
     margin: 0;
     font-family: Arial, sans-serif;
