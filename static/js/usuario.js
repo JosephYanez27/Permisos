@@ -208,26 +208,36 @@ async function guardarUsuario() {
 
     try {
 
-        const password = document.getElementById("password").value;
+        const password = document.getElementById("password").value.trim();
+        const perfilValue = document.getElementById("perfil").value;
+        const estadoValue = document.getElementById("estado").value;
+
+        if (!perfilValue || !estadoValue) {
+            mostrarMensaje("⚠️ Selecciona perfil y estado", "warning");
+            return;
+        }
 
         const usuarioData = {
             strnombreusuario: document.getElementById("usuario").value.trim(),
-            idperfil: parseInt(document.getElementById("perfil").value),
+            idperfil: parseInt(perfilValue),
             strcorreo: document.getElementById("correo").value.trim(),
             strnumerocelular: document.getElementById("celular").value.trim(),
-            idestadousuario: parseInt(document.getElementById("estado").value)
+            idestadousuario: parseInt(estadoValue)
         };
 
         const esEdicion = !!idUsuarioEdicion;
 
         if (!esEdicion) {
+
+            if (!password || password.length < 6) {
+                mostrarMensaje("⚠️ Contraseña mínima 6 caracteres", "warning");
+                return;
+            }
+
             usuarioData.strpwd = password;
         }
 
-        if (!validarUsuario(usuarioData, esEdicion)) {
-            btn.disabled = false;
-            return;
-        }
+        if (!validarUsuario(usuarioData, esEdicion)) return;
 
         const metodo = esEdicion ? "PUT" : "POST";
         const endpoint = esEdicion
@@ -239,7 +249,12 @@ async function guardarUsuario() {
             body: JSON.stringify(usuarioData)
         });
 
-        if (response && response.ok) {
+        const text = await response.text();
+
+        console.log("STATUS:", response.status);
+        console.log("RESPUESTA:", text);
+
+        if (response.ok) {
 
             mostrarMensaje(
                 esEdicion
@@ -249,20 +264,11 @@ async function guardarUsuario() {
             );
 
             cerrarModal();
-
-            // 🔥 ACTUALIZA TABLA SIN RECARGAR
             await buscarUsuarios();
-
-            // 🔥 OPCIONAL: recarga real
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
 
         } else {
 
-            const error = await response.text();
-            mostrarMensaje("❌ " + error, "error");
-
+            mostrarMensaje("❌ " + text, "error");
         }
 
     } catch (e) {
