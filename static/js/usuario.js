@@ -203,113 +203,149 @@ function cerrarModal() {
 // 🔹 Guardar usuario
 async function guardarUsuario() {
 
+    const btn = document.querySelector(".btn-guardar");
+    btn.disabled = true;
+
     const password = document.getElementById("password").value;
 
     const usuarioData = {
 
         strnombreusuario: document.getElementById("usuario").value.trim(),
 
-        idperfil: parseInt(
-            document.getElementById("perfil").value
-        ),
+        idperfil: parseInt(document.getElementById("perfil").value),
 
         strcorreo: document.getElementById("correo").value.trim(),
 
         strnumerocelular: document.getElementById("celular").value.trim(),
 
-        idestadousuario: parseInt(
-            document.getElementById("estado").value
-        )
+        idestadousuario: parseInt(document.getElementById("estado").value)
     };
 
     const esEdicion = !!idUsuarioEdicion;
 
-    // 🔹 Solo enviar contraseña cuando es creación
     if (!esEdicion) {
         usuarioData.strpwd = password;
     }
 
-    // 🔐 VALIDAR AQUÍ
-    if (!validarUsuario(usuarioData, esEdicion)) return;
+    if (!validarUsuario(usuarioData, esEdicion)) {
+        btn.disabled = false;
+        return;
+    }
 
     const metodo = esEdicion ? "PUT" : "POST";
-
     const endpoint = esEdicion
         ? `/usuario/${idUsuarioEdicion}`
         : "/usuario";
 
-    console.log("Datos enviados:", usuarioData);
+    try {
 
-    const response = await fetchAuth(endpoint, {
-        method: metodo,
-        body: JSON.stringify(usuarioData)
-    });
+        const response = await fetchAuth(endpoint, {
+            method: metodo,
+            body: JSON.stringify(usuarioData)
+        });
 
-    if (response && response.ok) {
+        if (response && response.ok) {
 
-        alert(
-            esEdicion
-                ? "Usuario actualizado"
-                : "Usuario creado"
-        );
+            mostrarMensaje(
+                esEdicion
+                    ? "✅ Usuario actualizado correctamente"
+                    : "✅ Usuario creado correctamente",
+                "success"
+            );
 
-        cerrarModal();
-        buscarUsuarios();
+            cerrarModal();
 
-    } else {
+            // 🔥 RECARGA CON RETARDO
+            setTimeout(() => {
+                location.reload();
+            }, 1200);
 
-        const error = await response.text();
-        alert("Error: " + error);
+        } else {
+
+            const error = await response.text();
+            mostrarMensaje("❌ Error: " + error, "error");
+
+        }
+
+    } catch (e) {
+        mostrarMensaje("❌ Error de conexión", "error");
     }
+
+    btn.disabled = false;
 }
 
 // 🔹 Editar
-async function editar(id) {
+async function guardarUsuario() {
 
-    // 🔐 Validar ID
-    if (!id || isNaN(id)) {
-        alert("ID inválido");
+    const btn = document.querySelector(".btn-guardar");
+    btn.disabled = true;
+
+    const password = document.getElementById("password").value;
+
+    const usuarioData = {
+
+        strnombreusuario: document.getElementById("usuario").value.trim(),
+
+        idperfil: parseInt(document.getElementById("perfil").value),
+
+        strcorreo: document.getElementById("correo").value.trim(),
+
+        strnumerocelular: document.getElementById("celular").value.trim(),
+
+        idestadousuario: parseInt(document.getElementById("estado").value)
+    };
+
+    const esEdicion = !!idUsuarioEdicion;
+
+    if (!esEdicion) {
+        usuarioData.strpwd = password;
+    }
+
+    if (!validarUsuario(usuarioData, esEdicion)) {
+        btn.disabled = false;
         return;
     }
 
-    idUsuarioEdicion = id;
+    const metodo = esEdicion ? "PUT" : "POST";
+    const endpoint = esEdicion
+        ? `/usuario/${idUsuarioEdicion}`
+        : "/usuario";
 
-    const response = await fetchAuth(`/usuario/${id}`);
+    try {
 
-    if (!response || !response.ok) {
-        console.error("Error cargando usuario");
-        alert("No se pudo cargar el usuario");
-        return;
+        const response = await fetchAuth(endpoint, {
+            method: metodo,
+            body: JSON.stringify(usuarioData)
+        });
+
+        if (response && response.ok) {
+
+            mostrarMensaje(
+                esEdicion
+                    ? "✅ Usuario actualizado correctamente"
+                    : "✅ Usuario creado correctamente",
+                "success"
+            );
+
+            cerrarModal();
+
+            // 🔥 RECARGA CON RETARDO
+            setTimeout(() => {
+                location.reload();
+            }, 1200);
+
+        } else {
+
+            const error = await response.text();
+            mostrarMensaje("❌ Error: " + error, "error");
+
+        }
+
+    } catch (e) {
+        mostrarMensaje("❌ Error de conexión", "error");
     }
 
-    const u = await response.json();
-
-    console.log("Usuario recibido:", u);
-
-    // 🔐 Validar datos antes de asignar
-    document.getElementById("usuario").value =
-        (u.strnombreusuario || "").replace(/[<>]/g, "");
-
-    document.getElementById("correo").value =
-        (u.strcorreo || "").replace(/[<>]/g, "");
-
-    document.getElementById("celular").value =
-        (u.strnumerocelular || "").replace(/[^\d]/g, "");
-
-    document.getElementById("perfil").value =
-        u.idperfil || "";
-
-    document.getElementById("estado").value =
-        u.idestadousuario || "";
-
-    // 🔒 Password comportamiento correcto
-    const inputPassword = document.getElementById("password");
-    inputPassword.value = "";
-    inputPassword.disabled = true;
-    inputPassword.placeholder = "******** (no editable)";
-
-    // 🔥 Mostrar modal
-    document.getElementById("modalUsuario").style.display = "block";
+    btn.disabled = false;
 }
 fetch("/menu.html")
 .then(res => res.text())
