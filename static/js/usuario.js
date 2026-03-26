@@ -206,77 +206,64 @@ async function guardarUsuario() {
     const btn = document.querySelector(".btn-guardar");
     btn.disabled = true;
 
-    const password = document.getElementById("password").value;
-
-    const usuarioData = {
-
-        strnombreusuario: document.getElementById("usuario").value.trim(),
-
-        idperfil: parseInt(document.getElementById("perfil").value),
-
-        strcorreo: document.getElementById("correo").value.trim(),
-
-        strnumerocelular: document.getElementById("celular").value.trim(),
-
-        idestadousuario: parseInt(document.getElementById("estado").value)
-    };
-
-    const esEdicion = !!idUsuarioEdicion;
-
-    if (!esEdicion) {
-        usuarioData.strpwd = password;
-    }
-
-    if (!validarUsuario(usuarioData, esEdicion)) {
-        btn.disabled = false;
-        return;
-    }
-
-    const metodo = esEdicion ? "PUT" : "POST";
-    const endpoint = esEdicion
-        ? `/usuario/${idUsuarioEdicion}`
-        : "/usuario";
-
     try {
+
+        const password = document.getElementById("password").value;
+
+        const usuarioData = {
+            strnombreusuario: document.getElementById("usuario").value.trim(),
+            idperfil: parseInt(document.getElementById("perfil").value),
+            strcorreo: document.getElementById("correo").value.trim(),
+            strnumerocelular: document.getElementById("celular").value.trim(),
+            idestadousuario: parseInt(document.getElementById("estado").value)
+        };
+
+        const esEdicion = !!idUsuarioEdicion;
+
+        if (!esEdicion) {
+            usuarioData.strpwd = password;
+        }
+
+        if (!validarUsuario(usuarioData, esEdicion)) return;
+
+        const metodo = esEdicion ? "PUT" : "POST";
+        const endpoint = esEdicion
+            ? `/usuario/${idUsuarioEdicion}`
+            : "/usuario";
 
         const response = await fetchAuth(endpoint, {
             method: metodo,
             body: JSON.stringify(usuarioData)
         });
 
-     if (response && response.ok) {
+        if (response.ok) {
 
-    mostrarMensaje(
-        esEdicion
-            ? "✅ Usuario actualizado correctamente"
-            : "✅ Usuario creado correctamente",
-        "success"
-    );
+            mostrarMensaje(
+                esEdicion
+                    ? "✅ Usuario actualizado correctamente"
+                    : "✅ Usuario creado correctamente",
+                "success"
+            );
 
-    cerrarModal();
-
-    // 🔥 ACTUALIZAR TABLA SIN RECARGAR
-    await buscarUsuarios();
-
-
-
-            // 🔥 RECARGA CON RETARDO
-            setTimeout(() => {
-                location.reload();
-            }, 1200);
+            cerrarModal();
+            await buscarUsuarios();
 
         } else {
 
             const error = await response.text();
-            mostrarMensaje("❌ Error: " + error, "error");
+            mostrarMensaje("❌ " + error, "error");
 
         }
 
     } catch (e) {
-        mostrarMensaje("❌ Error de conexión", "error");
-    }
 
-    btn.disabled = false;
+        console.error(e);
+        mostrarMensaje("❌ Error real: " + e.message, "error");
+
+    } finally {
+
+        btn.disabled = false;
+    }
 }
 
 // 🔹 Editar
