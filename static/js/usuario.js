@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         pagina = 1;
         buscarUsuarios();
     });
+    aplicarPermisosAuto();
     await cargarPerfiles();
     // 🔹 Primera carga
     buscarUsuarios();
