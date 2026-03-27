@@ -1,61 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Perfil</title>
-    <link rel="stylesheet" href="css/styles.css">
+<meta charset="UTF-8">
+<title>Principal1_1</title>
+
+<link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-modulo="perfil">
-    <div id="layout"></div>
 
+<body data-modulo="principal1_1">
+
+<!-- 🔹 LAYOUT GLOBAL -->
+<div id="layout"></div>
+
+<!-- 🔹 BREADCRUMB -->
 <div class="breadcrumb">
-    <a href="menu.html">Index</a>>Seguridad ><a href="perfil.html"> Perfil</a>
+    <a href="menu.html">Index</a> > Principal 1 > <span>Principal1_1</span>
 </div>
 
-<h2>Perfil</h2>
+<h2>Principal 1_1</h2>
 
-<button onclick="listarPerfiles()">Consultar</button>
-<button onclick="abrirModalPerfil()" data-permiso="agregar">
-  Nuevo Perfil
-</button>
-<table>
- <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Administrador</th>
-        <th>Editar</th>
-        <th>Eliminar</th>
-    </tr>
-</thead>
-    <tbody id="tabla-perfil"></tbody>
-</table>
-<div id="modalPerfil" class="modal">
-  <div class="modal-content">
+<div class="container">
 
-    <span class="close" onclick="cerrarModalPerfil()">&times;</span>
+    <div class="card">
 
-    <h3 id="tituloModal">Nuevo Perfil</h3>
+        <p class="descripcion">
+            Vista estática con integración de permisos del sistema.
+        </p>
 
-    <label>Nombre:</label>
-    <input type="text" id="nombrePerfil" maxlength="20">
+        <!-- 🔹 BOTÓN AGREGAR -->
+        <button class="btn" data-permiso="agregar" onclick="abrirModal()">
+            Nuevo Registro
+        </button>
 
-    <label>Administrador:</label>
-    <label class="switch">
-        <input type="checkbox" id="adminPerfil">
-        <span class="slider"></span>
-    </label>
+        <table class="tabla-usuarios">
 
-    <br><br>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
 
-    <button onclick="guardarPerfil()">Guardar</button>
-    <button onclick="cerrarModalPerfil()">Cancelar</button>
+            <tbody id="tabla-principal">
 
-  </div>
+                <tr>
+                    <td>1</td>
+                    <td>Registro 1</td>
+                    <td>Ejemplo estático</td>
+                    <td class="activo">Activo</td>
+
+                    <td>
+                        <button data-permiso="editar">
+                            Editar
+                        </button>
+                    </td>
+
+                    <td>
+                        <button data-permiso="eliminar">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Registro 2</td>
+                    <td>Otro ejemplo</td>
+                    <td class="inactivo">Inactivo</td>
+
+                    <td>
+                        <button data-permiso="editar">
+                            Editar
+                        </button>
+                    </td>
+
+                    <td>
+                        <button data-permiso="eliminar">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
+<!-- 🔹 MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content usuario-form">
+
+        <span class="close" onclick="cerrarModal()">&times;</span>
+
+        <h2>Nuevo Registro</h2>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Descripción</label>
+            <input type="text">
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-guardar">Guardar</button>
+            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🔹 JS GLOBAL -->
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
 <script src="js/menu.js"></script>
 <script src="js/authPermisos.js"></script>
-<script src="js/perfil.js"></script>
+
+<script>
+
+/* 🔹 MODAL */
+function abrirModal(){
+    document.getElementById("modal").style.display = "block";
+}
+
+function cerrarModal(){
+    document.getElementById("modal").style.display = "none";
+}
+
+/* 🔥 INIT */
+document.addEventListener("DOMContentLoaded", async () => {
+
+    // 🔹 Cargar menú/layout
+    await cargarLayout();
+
+    // 🔐 Validar acceso al módulo
+    const acceso = await aplicarPermisosAuto();
+    if (!acceso) return;
+
+    // 🔐 Aplicar permisos a botones
+    aplicarPermisosEnVista();
+});
+</script>
+
 </body>
 </html>

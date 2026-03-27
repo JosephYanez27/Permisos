@@ -2,439 +2,86 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Gestión de Registros</title>
+<title>Principal2_1</title>
 
-<style>
-    :root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --bg: #f4f6f9;
-    --sidebar: #0f172a;
-    --text: #0f172a;
-    --text-light: #64748b;
-    --white: #ffffff;
-    --danger: #ef4444;
-    --success: #22c55e;
-    --border: #e5e7eb;
-}
-    header {
-    background: var(--sidebar);
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header button {
-    background: var(--danger);
-    border: none;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-
-/* 🔹 TOPBAR */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #0f172a;
-    color: white;
-    padding: 10px 20px;
-}
-
-/* 🔥 IZQUIERDA: TITULO + MENU */
-.topbar .left {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-/* 🔹 MENU HORIZONTAL */
-.menu-horizontal > ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.menu-horizontal li {
-    position: relative;
-}
-
-/* 🔥 SOLO PADRES VISIBLES */
-.menu-horizontal > ul > li > a {
-    display: block;
-    padding: 10px 15px;
-    color: #cbd5f5;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.menu-horizontal > ul > li:hover {
-    background: #1e293b;
-}
-
-/* 🔥 SUBMENU (OCULTO) */
-.submenu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: #1e293b;
-    min-width: 180px;
-    display: none;
-}
-
-/* 🔥 MOSTRAR AL HOVER */
-.menu-horizontal li:hover .submenu {
-    display: block;
-}
-
-/* 🔹 ITEMS HIJOS */
-.submenu li {
-    display: block;
-}
-
-.submenu a {
-    display: block;
-    padding: 10px;
-    color: #94a3b8;
-    text-decoration: none;
-}
-
-.submenu a:hover {
-    background: #3b82f6;
-    color: white;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-}
-
-/* CONTENEDOR */
-.container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-/* CARD */
-.card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-/* TITULO */
-.title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.title::before {
-    content: "";
-    width: 4px;
-    height: 25px;
-    background: #3b82f6;
-    border-radius: 5px;
-}
-
-.title h2 {
-    margin: 0;
-}
-
-/* DESCRIPCIÓN */
-.descripcion {
-    color: #666;
-    margin: 10px 0 20px 0;
-}
-
-/* BOTÓN */
-.btn {
-    background: #3b82f6;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.btn:hover {
-    background: #2563eb;
-}
-
-/* TABLA */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background: #f1f5f9;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    font-size: 12px;
-    color: #555;
-    text-transform: uppercase;
-}
-
-tr {
-    border-bottom: 1px solid #eee;
-}
-
-tr:hover {
-    background: #f9fafb;
-}
-
-/* ESTADOS */
-.activo {
-    color: #10b981;
-    font-weight: bold;
-}
-
-.inactivo {
-    color: #ef4444;
-    font-weight: bold;
-}
-
-/* BOTONES CRUD */
-.acciones button {
-    margin-right: 5px;
-    padding: 6px 10px;
-    border-radius: 5px;
-    border: 1px solid;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-/* VER */
-.btn-ver {
-    color: #3b82f6;
-    border-color: #3b82f6;
-    background: transparent;
-}
-
-/* EDITAR */
-.btn-editar {
-    color: #f59e0b;
-    border-color: #f59e0b;
-    background: transparent;
-}
-
-/* ELIMINAR */
-.btn-eliminar {
-    color: #ef4444;
-    border-color: #ef4444;
-    background: transparent;
-}
-
-/* HOVER */
-.acciones button:hover {
-    opacity: 0.8;
-}
-.hidden {
-    display: none;
-}
-/* 🔹 Breadcrumb contenedor */
-.breadcrumb {
-    background: #f1f5f9;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 14px;
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* 🔹 Links */
-.breadcrumb a {
-    text-decoration: none;
-    color: #3b82f6;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-/* 🔥 Hover bonito */
-.breadcrumb a:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-}
-
-/* 🔹 Texto actual (último) */
-.breadcrumb span {
-    color: #64748b;
-    font-weight: 600;
-}
-
-/* 🔹 Separador */
-.breadcrumb::before {
-    content: "📍";
-    margin-right: 5px;
-}
-.perfil-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 80px);
-    background: #f1f5f9;
-}
-
-.perfil-card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 320px;
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.perfil-card h2 {
-    margin-bottom: 15px;
-}
-
-.foto-section img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #3b82f6;
-    margin-bottom: 10px;
-}
-.upload-section {
-    margin-top: 15px;
-}
-
-.upload-section input {
-    margin-bottom: 10px;
-}
-
-.upload-section button {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.upload-section button:hover {
-    background: #2563eb;
-}
-.perfil {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-}
-
-.perfil img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #3b82f6;
-    transition: 0.3s;
-}
-
-.perfil:hover img {
-    transform: scale(1.1);
-}
-
-.perfil span {
-    color: white;
-    font-weight: 500;
-}
-button {
-    background: var(--primary);
-    border: none;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: var(--primary-dark);
-}
-
-button.danger {
-    background: var(--danger);
-}
-</style>
-
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
+<body data-modulo="principal2_1">
+
+<!-- 🔹 LAYOUT GLOBAL -->
 <div id="layout"></div>
+
+<!-- 🔹 BREADCRUMB -->
 <div class="breadcrumb">
     <a href="menu.html">Index</a> > Principal 2 > <a href="principal2_1.html">Principal2_1</a>
 </div>
 
+<h2>Principal 2_1</h2>
+
 <div class="container">
- 
+
     <div class="card">
 
-        <div class="title">
-            <h2>Gestión de Registros</h2>
-        </div>
-
         <p class="descripcion">
-            Esta es una pantalla estática de demostración. Los botones de CRUD no afectan la base de datos.
+            Vista estática con integración de permisos del sistema.
         </p>
 
-        <button class="btn">+ Agregar Nuevo Registro</button>
+        <!-- 🔹 BOTÓN AGREGAR -->
+        <button class="btn" data-permiso="agregar" onclick="abrirModal()">
+            Nuevo Registro
+        </button>
 
-        <table>
+        <table class="tabla-usuarios">
 
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre de Registro</th>
+                    <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Estado</th>
-                    <th>Acciones CRUD</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="tabla-principal">
 
                 <tr>
                     <td>1</td>
-                    <td>Dato de Prueba 01</td>
-                    <td>Este es un registro de relleno para cumplir la rúbrica</td>
+                    <td>Registro 1</td>
+                    <td>Ejemplo estático</td>
                     <td class="activo">Activo</td>
-                    <td class="acciones">
-                        <button class="btn-ver">Ver</button>
-                        <button class="btn-editar">Editar</button>
-                        <button class="btn-eliminar">Eliminar</button>
+
+                    <td>
+                        <button data-permiso="editar">
+                            Editar
+                        </button>
+                    </td>
+
+                    <td>
+                        <button data-permiso="eliminar">
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
 
                 <tr>
                     <td>2</td>
-                    <td>Dato de Prueba 02</td>
-                    <td>Otro registro simulado sin conexión a BD</td>
+                    <td>Registro 2</td>
+                    <td>Otro ejemplo</td>
                     <td class="inactivo">Inactivo</td>
-                    <td class="acciones">
-                        <button class="btn-ver">Ver</button>
-                        <button class="btn-editar">Editar</button>
-                        <button class="btn-eliminar">Eliminar</button>
+
+                    <td>
+                        <button data-permiso="editar">
+                            Editar
+                        </button>
+                    </td>
+
+                    <td>
+                        <button data-permiso="eliminar">
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
 
@@ -446,15 +93,63 @@ button.danger {
 
 </div>
 
-</body>
+<!-- 🔹 MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content usuario-form">
+
+        <span class="close" onclick="cerrarModal()">&times;</span>
+
+        <h2>Nuevo Registro</h2>
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text">
+        </div>
+
+        <div class="form-group">
+            <label>Descripción</label>
+            <input type="text">
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-guardar">Guardar</button>
+            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🔹 JS GLOBAL -->
 <script src="js/config.js"></script>
 <script src="js/fetchAuth.js"></script>
 <script src="js/menu.js"></script>
 <script src="js/authPermisos.js"></script>
 
 <script>
+
+/* 🔹 MODAL */
+function abrirModal(){
+    document.getElementById("modal").style.display = "block";
+}
+
+function cerrarModal(){
+    document.getElementById("modal").style.display = "none";
+}
+
+/* 🔥 INIT */
 document.addEventListener("DOMContentLoaded", async () => {
+
+    // 🔹 Cargar menú/layout
     await cargarLayout();
+
+    // 🔐 Validar acceso al módulo
+    const acceso = await aplicarPermisosAuto();
+    if (!acceso) return;
+
+    // 🔐 Aplicar permisos a botones
+    aplicarPermisosEnVista();
 });
 </script>
+
+</body>
 </html>
