@@ -21,22 +21,24 @@ function renderTabla(){
 
     const tabla = document.getElementById("tabla-modulos");
     tabla.innerHTML = "";
-      const inicio = (paginaActual - 1) * registrosPorPagina;
+
+    // 🔥 PAGINACIÓN REAL
+    const inicio = (paginaActual - 1) * registrosPorPagina;
     const fin = inicio + registrosPorPagina;
 
     const paginaData = modulosFiltrados.slice(inicio, fin);
 
     if(paginaData.length === 0){
         tabla.innerHTML = `<tr><td colspan="3">Sin resultados</td></tr>`;
+        renderPaginacion();
         return;
     }
+
     paginaData.forEach(m => {
 
         tabla.innerHTML += `
         <tr>
-
             <td>${m.strnombremodulo}</td>
-        
 
             <td>
                 <button data-permiso="editar" onclick="editar(${m.id})">
@@ -53,8 +55,10 @@ function renderTabla(){
         `;
     });
 
-    // 🔥 CLAVE
     aplicarPermisosEnVista();
+
+    // 🔥 IMPORTANTE
+    renderPaginacion();
 }
 
 function cargarPadres(){
@@ -62,7 +66,10 @@ function cargarPadres(){
     const select = document.getElementById("padre");
     select.innerHTML = `<option value="">Sin padre</option>`;
 
-    modulos.forEach(m => {
+    // 🔥 SOLO PADRES (sin idmodulopadre)
+    const padres = modulos.filter(m => !m.idmodulopadre);
+
+    padres.forEach(m => {
         select.innerHTML += `
             <option value="${m.id}">
                 ${m.strnombremodulo}

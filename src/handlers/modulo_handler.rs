@@ -131,24 +131,57 @@ pub async fn create_modulo(
     data: web::Json<CrearModulo>,
 ) -> HttpResponse {
 
-    let result = sqlx::query(
+    // 🔹 1. INSERTAR MÓDULO
+    let result = sqlx::query!(
         r#"
         INSERT INTO modulo (strnombremodulo, idmodulopadre)
         VALUES ($1, $2)
-        "#
+        RETURNING id
+        "#,
+        data.strnombremodulo,
+        data.idmodulopadre
     )
-    .bind(&data.strnombremodulo)
-    .bind(data.idmodulopadre)
+    .fetch_one(pool.get_ref())
+    .await;
+
+    let modulo = match result {
+        Ok(r) => r,
+        Err(e) => {
+            println!("Error creando módulo: {:?}", e);
+            return HttpResponse::InternalServerError().body("Error creando módulo");
+        }
+    };
+
+    let id_modulo = modulo.id;
+
+    // 🔥 2. INSERTAR PERMISOS PARA ADMIN
+    let _ = sqlx::query!(
+        r#"
+        INSERT INTO permisosperfil (
+            idmodulo,
+            idperfil,
+            bitagregar,
+            biteditar,
+            bitconsulta,
+            biteliminar,
+            bitdetalle
+        )
+        VALUES ($1, $2, true, true, true, true, true)
+        ON CONFLICT (idmodulo, idperfil)
+        DO UPDATE SET
+            bitagregar = true,
+            biteditar = true,
+            bitconsulta = true,
+            biteliminar = true,
+            bitdetalle = true
+        "#,
+        id_modulo,
+        1 // 🔥 ADMIN
+    )
     .execute(pool.get_ref())
     .await;
 
-    match result {
-        Ok(_) => HttpResponse::Ok().body("Módulo creado"),
-        Err(e) => {
-            println!("Error: {:?}", e);
-            HttpResponse::InternalServerError().body("Error al crear módulo")
-        }
-    }
+    HttpResponse::Ok().body("Módulo creado con permisos de admin")
 }
 #[put("/modulo/{id}")]
 pub async fn update_modulo(
