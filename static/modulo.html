@@ -13,7 +13,7 @@
 <div class="breadcrumb">
     <a href="menu.html">Index</a>>Seguridad ><a href="modulo.html"> Modulo</a>
 </div>
-
+<input type="text" id="buscarModulo" placeholder="Buscar módulo..." oninput="filtrarModulos()">
 <button data-permiso="agregar" onclick="abrirModal()">
     Agregar módulo
 </button>
@@ -29,7 +29,7 @@
     </thead>
     <tbody id="tabla-modulos"></tbody>
 </table>
-
+<div id="paginacion" class="paginacion"></div>
 <!-- 🔹 MODAL -->
 <div id="modal" class="modal">
     <div class="modal-content">

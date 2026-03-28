@@ -21,8 +21,16 @@ function renderTabla(){
 
     const tabla = document.getElementById("tabla-modulos");
     tabla.innerHTML = "";
+      const inicio = (paginaActual - 1) * registrosPorPagina;
+    const fin = inicio + registrosPorPagina;
 
-    modulos.forEach(m => {
+    const paginaData = modulosFiltrados.slice(inicio, fin);
+
+    if(paginaData.length === 0){
+        tabla.innerHTML = `<tr><td colspan="3">Sin resultados</td></tr>`;
+        return;
+    }
+    paginaData.forEach(m => {
 
         tabla.innerHTML += `
         <tr>
@@ -164,4 +172,93 @@ function validarModulo(nombre) {
     }
 
     return true;
+}
+let paginaActual = 1;
+const registrosPorPagina = 5;
+let modulosFiltrados = [];
+function filtrarModulos(){
+
+    const texto = document.getElementById("buscarModulo").value.toLowerCase();
+
+    modulosFiltrados = modulos.filter(m =>
+        m.strnombremodulo.toLowerCase().includes(texto)
+    );
+
+    paginaActual = 1;
+
+    renderTabla();
+}
+async function cargarModulos(){
+
+    const res = await fetchAuth("/modulo");
+    const data = await res.json();
+
+    modulos = data;
+    modulosFiltrados = data; // 🔥 importante
+
+    renderTabla();
+    cargarPadres();
+}
+function renderPaginacion(){
+
+    const totalPaginas = Math.ceil(modulosFiltrados.length / registrosPorPagina);
+    const contenedor = document.getElementById("paginacion");
+
+    contenedor.innerHTML = "";
+
+    if(totalPaginas === 0) return;
+
+    // ⏮️ INICIO
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(1)" ${paginaActual === 1 ? 'disabled' : ''}>
+            ⏮
+        </button>
+    `;
+
+    // ◀️ ANTERIOR
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${paginaActual - 1})"
+            ${paginaActual === 1 ? 'disabled' : ''}>
+            ◀
+        </button>
+    `;
+
+    // 🔢 NÚMEROS (máx 5 visibles)
+    let inicio = Math.max(1, paginaActual - 2);
+    let fin = Math.min(totalPaginas, paginaActual + 2);
+
+    for(let i = inicio; i <= fin; i++){
+        contenedor.innerHTML += `
+            <button onclick="cambiarPagina(${i})"
+                class="${i === paginaActual ? 'activo' : ''}">
+                ${i}
+            </button>
+        `;
+    }
+
+    // ▶️ SIGUIENTE
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${paginaActual + 1})"
+            ${paginaActual === totalPaginas ? 'disabled' : ''}>
+            ▶
+        </button>
+    `;
+
+    // ⏭️ FINAL
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${totalPaginas})"
+            ${paginaActual === totalPaginas ? 'disabled' : ''}>
+            ⏭
+        </button>
+    `;
+}
+function cambiarPagina(pagina){
+
+    const totalPaginas = Math.ceil(modulosFiltrados.length / registrosPorPagina);
+
+    if(pagina < 1 || pagina > totalPaginas) return;
+
+    paginaActual = pagina;
+
+    renderTabla();
 }
