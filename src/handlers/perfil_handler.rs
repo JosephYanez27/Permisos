@@ -17,16 +17,22 @@ pub async fn get_perfiles(
         .parse()
         .unwrap_or(1);
 
+    let filtro = query.get("filtro")
+        .unwrap_or(&"".to_string())
+        .to_string();
+
     let offset = (page - 1) * 5;
 
     let perfiles = sqlx::query_as::<_, Perfil>(
         r#"
         SELECT id, strnombreperfil, bitadministrador
         FROM perfil
+        WHERE LOWER(strnombreperfil) LIKE LOWER($1)
         ORDER BY id
-        LIMIT 5 OFFSET $1
+        LIMIT 5 OFFSET $2
         "#
     )
+    .bind(format!("%{}%", filtro))
     .bind(offset)
     .fetch_all(pool.get_ref())
     .await;

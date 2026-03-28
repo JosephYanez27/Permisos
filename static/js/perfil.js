@@ -1,6 +1,12 @@
+let paginaActual = 1;
+const registrosPorPagina = 5;
+let filtroActual = "";
+
 async function listarPerfiles() {
 
-    const response = await fetchAuth("/perfil?page=1");
+    filtroActual = document.getElementById("buscarPerfil")?.value || "";
+
+    const response = await fetchAuth(`/perfil?page=${paginaActual}&filtro=${filtroActual}`);
     if (!response) return;
 
     const data = await response.json();
@@ -10,30 +16,71 @@ async function listarPerfiles() {
 
     data.forEach(p => {
 
-      tabla.innerHTML += `
-    <tr>
-        <td>${p.strnombreperfil}</td>
-        <td>${p.bitadministrador ? "Sí" : "No"}</td>
+        tabla.innerHTML += `
+        <tr>
+            <td>${p.strnombreperfil}</td>
+            <td>${p.bitadministrador ? "Sí" : "No"}</td>
 
-        <td>
-          <button data-permiso="editar"
-            onclick="abrirModalPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">
-            Editar
-          </button>
-        </td>
+            <td>
+              <button data-permiso="editar"
+                onclick="abrirModalPerfil(${p.id}, '${p.strnombreperfil}', ${p.bitadministrador})">
+                Editar
+              </button>
+            </td>
 
-        <td>
-          <button data-permiso="eliminar"
-            onclick="eliminarPerfil(${p.id})">
-            Eliminar
-          </button>
-        </td>
-    </tr>
-`;
+            <td>
+              <button data-permiso="eliminar"
+                onclick="eliminarPerfil(${p.id})">
+                Eliminar
+              </button>
+            </td>
+        </tr>
+        `;
     });
 
-    // 🔥 AQUI TAMBIÉN
+    // 🔥 APLICAR PERMISOS (IMPORTANTE)
     aplicarPermisosEnVista();
+
+    // 🔥 PAGINACIÓN
+    renderPaginacion(data.length);
+}
+function buscarPerfiles(){
+    paginaActual = 1;
+    listarPerfiles();
+}
+function renderPaginacion(cantidad){
+
+    const contenedor = document.getElementById("paginacion");
+    contenedor.innerHTML = "";
+
+    const esUltima = cantidad < registrosPorPagina;
+
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(1)" ${paginaActual === 1 ? 'disabled' : ''}>⏮</button>
+    `;
+
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${paginaActual - 1})" ${paginaActual === 1 ? 'disabled' : ''}>◀</button>
+    `;
+
+    contenedor.innerHTML += `
+        <span>Página ${paginaActual}</span>
+    `;
+
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${paginaActual + 1})" ${esUltima ? 'disabled' : ''}>▶</button>
+    `;
+
+    contenedor.innerHTML += `
+        <button onclick="cambiarPagina(${paginaActual + 1})" ${esUltima ? 'disabled' : ''}>⏭</button>
+    `;
+}
+function cambiarPagina(pagina){
+
+    if(pagina < 1) return;
+
+    paginaActual = pagina;
+    listarPerfiles();
 }
 async function agregarPerfil() {
 
